@@ -1,0 +1,181 @@
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import Header from './Header';
+import axios from 'axios';
+
+const PlanDisplay = ({ plan }) => {
+  if (!plan || !plan.diet_plan || !plan.workout_plan) {
+    return <p>Plan data is incomplete or not available.</p>;
+  }
+
+  const renderMeal = (meal) => {
+    if (!meal) return null;
+    return (
+      <div className="mb-4">
+        <h4 className="font-bold">{meal.meal_name} ({meal.calories} calories)</h4>
+        <p><strong>Macros:</strong> Protein: {meal.macros?.protein}, Carbs: {meal.macros?.carbs}, Fats: {meal.macros?.fats}</p>
+        <p><strong>Recipe:</strong> {meal.recipe}</p>
+      </div>
+    );
+  };
+
+  const renderExercise = (exercise) => {
+    if (!exercise) return null;
+    return (
+      <div className="mb-2">
+        <p><strong>{exercise.exercise}</strong>: {exercise.sets} sets x {exercise.reps} reps (Tempo: {exercise.tempo})</p>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <h3 className="text-xl font-bold mb-4">Diet Plan</h3>
+      {Object.entries(plan.diet_plan).map(([day, meals]) => (
+        <div key={day} className="mb-6">
+          <h4 className="text-lg font-semibold">{day.replace('_', ' ')}</h4>
+          {Object.entries(meals).filter(([key]) => key !== 'total_calories').map(([mealKey, meal]) => (
+            <div key={mealKey}>{renderMeal(meal)}</div>
+          ))}
+        </div>
+      ))}
+
+      <h3 className="text-xl font-bold mb-4 mt-8">Workout Plan</h3>
+      {Object.entries(plan.workout_plan).map(([day, workout]) => (
+        <div key={day} className="mb-6">
+          <h4 className="text-lg font-semibold">{day.replace('_', ' ')} - {workout.session}</h4>
+          {workout.exercises && workout.exercises.map((exercise, index) => (
+            <div key={index}>{renderExercise(exercise)}</div>
+          ))}
+        </div>
+      ))}
+
+      <h3 className="text-xl font-bold mb-4 mt-8">Diet Macros</h3>
+      {plan.diet_macros && (
+        <>
+          <p>Total Calories: {plan.diet_macros.total_calories_needed}</p>
+          <p>Protein: {plan.diet_macros.macronutrients.protein}</p>
+          <p>Carbohydrates: {plan.diet_macros.macronutrients.carbohydrates}</p>
+          <p>Fats: {plan.diet_macros.macronutrients.fats}</p>
+        </>
+      )}
+    </div>
+  );
+};
+
+const EmailPopup = ({ isOpen, onClose, onSubmit }) => {
+  const [email, setEmail] = useState('');
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+        <h3 className="text-xl font-bold mb-4">Enter your email</h3>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Your email address"
+          className="w-full p-2 border rounded mb-4"
+        />
+        <div className="flex justify-end">
+          <button
+            onClick={() => onSubmit(email)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+          >
+            Submit
+          </button>
+          <button
+            onClick={onClose}
+            className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function FinalResultsPage() {
+  const location = useLocation();
+  const finalPlan = location.state?.finalPlan;
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isGeneratingSheet, setIsGeneratingSheet] = useState(false);
+
+  const handleEmailSubmit = async (email) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/save-plan', {
+        email,
+        dietPlan: finalPlan.diet_plan,
+        workoutPlan: finalPlan.workout_plan,
+        dietMacros: finalPlan.diet_macros
+      });
+      console.log('Plan saved:', response.data);
+      alert('Your plan has been saved and will be emailed to you shortly!');
+    } catch (error) {
+      console.error('Error saving plan:', error);
+      alert('Failed to save your plan. Please try again.');
+    }
+    setIsPopupOpen(false);
+  };
+
+  const handleGenerateGoogleSheet = async () => {
+    setIsGeneratingSheet(true);
+    try {
+      // This is where you would typically call your backend API
+      // to generate the Google Sheet
+      console.log('Generating Google Sheet for workout plan...');
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulating API call
+      alert('Google Sheet generated successfully! (This is a placeholder)');
+    } catch (error) {
+      console.error('Error generating Google Sheet:', error);
+      alert('Failed to generate Google Sheet. Please try again.');
+    } finally {
+      setIsGeneratingSheet(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-grow flex items-center justify-center bg-gray-100">
+        <div className="bg-white bg-opacity-90 p-8 rounded shadow-lg max-w-4xl w-full">
+          <h2 className="text-2xl font-bold mb-4">Your Final Diet and Workout Plan</h2>
+          <p className="mb-4">Congratulations! Here's your personalized plan based on your inputs and feedback.</p>
+          
+          {finalPlan ? (
+            <PlanDisplay plan={finalPlan} />
+          ) : (
+            <p>No plan data available. Please go back and generate a plan.</p>
+          )}
+
+          <div className="mt-4 flex flex-wrap justify-between items-center">
+            <Link to="/" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block mb-2">
+              Back to Home
+            </Link>
+            <button
+              onClick={() => setIsPopupOpen(true)}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
+            >
+              Email My Plan
+            </button>
+            <button
+              onClick={handleGenerateGoogleSheet}
+              disabled={isGeneratingSheet}
+              className={`bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-block mb-2 ${isGeneratingSheet ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {isGeneratingSheet ? 'Generating...' : 'Generate Google Sheet'}
+            </button>
+          </div>
+        </div>
+      </main>
+      <EmailPopup
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onSubmit={handleEmailSubmit}
+      />
+    </div>
+  );
+}
