@@ -37,6 +37,7 @@ const PlanDisplay = ({ plan }) => {
           {Object.entries(meals).filter(([key]) => key !== 'total_calories').map(([mealKey, meal]) => (
             <div key={mealKey}>{renderMeal(meal)}</div>
           ))}
+
         </div>
       ))}
 
@@ -102,18 +103,21 @@ export default function FinalResultsPage() {
   const location = useLocation();
   const finalPlan = location.state?.finalPlan;
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isGeneratingSheet, setIsGeneratingSheet] = useState(false);
+  const [actionType, setActionType] = useState(''); // New state for action type
 
   const handleEmailSubmit = async (email) => {
+    console.log('Submitting email:', email);
+    const endpoint = actionType === 'emailPlan' ? 'http://localhost:5000/api/email-plan' : 'http://localhost:5000/api/generate-sheet';
+    
     try {
-      const response = await axios.post('http://localhost:5000/api/save-plan', {
+      const response = await axios.post(endpoint, {
         email,
         dietPlan: finalPlan.diet_plan,
         workoutPlan: finalPlan.workout_plan,
         dietMacros: finalPlan.diet_macros
       });
-      console.log('Plan saved:', response.data);
-      alert('Your plan has been saved and will be emailed to you shortly!');
+      console.log('Plan response:', response.data);
+      alert(`Your plan has been saved and will be emailed to you shortly!`);
     } catch (error) {
       console.error('Error saving plan:', error);
       alert('Failed to save your plan. Please try again.');
@@ -121,20 +125,14 @@ export default function FinalResultsPage() {
     setIsPopupOpen(false);
   };
 
-  const handleGenerateGoogleSheet = async () => {
-    setIsGeneratingSheet(true);
-    try {
-      // This is where you would typically call your backend API
-      // to generate the Google Sheet
-      console.log('Generating Google Sheet for workout plan...');
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulating API call
-      alert('Google Sheet generated successfully! (This is a placeholder)');
-    } catch (error) {
-      console.error('Error generating Google Sheet:', error);
-      alert('Failed to generate Google Sheet. Please try again.');
-    } finally {
-      setIsGeneratingSheet(false);
-    }
+  const handleGenerateGoogleSheet = () => {
+    setActionType('generateSheet'); // Set action type for generating Google Sheet
+    setIsPopupOpen(true);
+  };
+
+  const handleEmailMyPlan = () => {
+    setActionType('emailPlan'); // Set action type for emailing the plan
+    setIsPopupOpen(true);
   };
 
   return (
@@ -156,17 +154,16 @@ export default function FinalResultsPage() {
               Back to Home
             </Link>
             <button
-              onClick={() => setIsPopupOpen(true)}
+              onClick={handleEmailMyPlan}
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
             >
               Email My Plan
             </button>
             <button
               onClick={handleGenerateGoogleSheet}
-              disabled={isGeneratingSheet}
-              className={`bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-block mb-2 ${isGeneratingSheet ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
             >
-              {isGeneratingSheet ? 'Generating...' : 'Generate Google Sheet'}
+              Generate Google Sheet
             </button>
           </div>
         </div>

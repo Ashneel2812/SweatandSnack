@@ -61,7 +61,6 @@ const submitQuestionnaire = async (req, res) => {
     My lifestyle is: ${formData.lifestyle}.
     I prefer a ${formData.diet} diet.
     Diet-Related Information:
-    Based on the height, weight, activity level and goal mentioned, calculate the number of calories based on BMI and make a diet plan which satisfies the nutrient profile and macros and also mention the macros and calories in each meal.The calaories should be calculated exzctly and the meals should have the exact number of calories needed.
     I have the following dietary allergies: ${formData.allergies}.
     I prefer to eat ${formData.meals} meals per day and follow ${formData.cuisine} cuisine.
     I have ${formData.cookingTime} hours per day available for cooking.
@@ -72,11 +71,13 @@ const submitQuestionnaire = async (req, res) => {
     I have access to the following equipment: ${formData.equipment}.
     I have ${formData.dailyTime} hours per day available for workout.
     I am working on mobility/flexibility: ${formData.mobility}.If not working on mobility , do not include mobility in the workout routine.
+    Calculate the Basal Metabolic Rate (BMR) using the Mifflin-St Jeor Equation and Adjust the BMR based on the activity level to find the Total Daily Energy Expenditure (TDEE): Sedentary (little or no exercise): BMR*1.2,Lightly active (light exercise/sports 1-3 days a week): BMR*1.375,Moderately active (moderate exercise/sports 3-5 days a week): BMR+1.55,Very active (hard exercise/sports 6-7 days a week): BMR*1.725,Super active (very hard exercise/sports & a physical job): BMR*1.9
+    Based on the TDEE calculate the calories to be taken for different goals . As you are a trained fitness coach you should be giving proper calories to be taken keeping the nutrients and macros required and also daily calorie count should be the same as the calories required arrange protein , fats and carbs based on the need. Also keep in mind the duration mentioned to achieve the goals.
     Based on this information, please provide the following for 7 days and every day should have different recipes:
     A diet plan structured by day and meal number in the following JSON format and in the json also include needed and total calories available on that specific day:
     ${dietPlanPrompt} . Give this JSON for 7 days.
     Ensure each meal includes the name, calorie count, macronutrients (protein, carbs, fats), and the recipe should include the exact measurement of the ingredient and the entire recipe step by step.
-    A workout plan structured by day and session in the following JSON format:
+    Every workout should include exercises in such a way that all the parts of the muscle to be trained are included . Include atleast 5 exercises every day so that the user can include the exercises they need . A workout plan structured by day and session in the following JSON format:
     ${workoutPlanPrompt} . Give this JSON for 7 days.
     Add a third Json named Diet-macros and in this JSON give the breakdown of the calories needed by the individual and the macro nutrients required.This should be the exact calories available throught the diet also.
     The third Json should be of the form         

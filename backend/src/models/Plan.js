@@ -4,7 +4,6 @@ const PlanSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true
   },
   dietPlan: {
     type: Object,
@@ -24,4 +23,4 @@ const PlanSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Plan', PlanSchema);
+module.exports = mongoose.model('Plan', PlanSchema, 'EmailPlan');

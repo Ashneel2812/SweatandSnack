@@ -277,7 +277,7 @@ export default function QuestionnairePage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">Lifestyle:</label>
-              {['active', 'less_active', 'very_active'].map((lifestyle) => (
+              {['sedentary', 'lightly_active', 'moderately_active', 'very_active', 'super_active'].map((lifestyle) => (
                 <div key={lifestyle} className="flex items-center">
                   <input type="radio" id={`lifestyle-${lifestyle}`} name="lifestyle" value={lifestyle} onChange={handleChange} checked={formData.lifestyle === lifestyle} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
                   <label htmlFor={`lifestyle-${lifestyle}`} className="ml-2 block text-sm text-gray-900">{lifestyle.replace('_', ' ')}</label>
