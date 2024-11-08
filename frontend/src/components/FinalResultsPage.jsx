@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Header from './Header';
 import axios from 'axios';
+import EmailPopup from './EmailPopup'; // Import the EmailPopup component
 
 const PlanDisplay = ({ plan }) => {
   if (!plan || !plan.diet_plan || !plan.workout_plan) {
@@ -37,7 +38,6 @@ const PlanDisplay = ({ plan }) => {
           {Object.entries(meals).filter(([key]) => key !== 'total_calories').map(([mealKey, meal]) => (
             <div key={mealKey}>{renderMeal(meal)}</div>
           ))}
-
         </div>
       ))}
 
@@ -64,79 +64,38 @@ const PlanDisplay = ({ plan }) => {
   );
 };
 
-const EmailPopup = ({ isOpen, onClose, onSubmit }) => {
-  const [email, setEmail] = useState('');
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-        <h3 className="text-xl font-bold mb-4">Enter your email</h3>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Your email address"
-          className="w-full p-2 border rounded mb-4"
-        />
-        <div className="flex justify-end">
-          <button
-            onClick={() => onSubmit(email)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-          >
-            Submit
-          </button>
-          <button
-            onClick={onClose}
-            className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export default function FinalResultsPage() {
   const location = useLocation();
   const finalPlan = location.state?.finalPlan;
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [actionType, setActionType] = useState(''); // New state for action type
+  const [isLoading, setIsLoading] = useState(false); // New loading state
 
   const handleEmailSubmit = async (email) => {
-    console.log('Submitting email:', email);
-    const endpoint = actionType === 'emailPlan' ? 'http://localhost:5000/api/email-plan' : 'http://localhost:5000/api/generate-sheet';
-    
+    setIsLoading(true); // Set loading to true
     try {
-      const response = await axios.post(endpoint, {
+      const response = await axios.post('http://localhost:5000/api/email-plan', {
         email,
         dietPlan: finalPlan.diet_plan,
         workoutPlan: finalPlan.workout_plan,
         dietMacros: finalPlan.diet_macros
       });
-      console.log('Plan response:', response.data);
-      alert(`Your plan has been saved and will be emailed to you shortly!`);
+      console.log('Plan saved:', response.data);
+      alert('Your plan has been saved and will be emailed to you shortly!');
     } catch (error) {
       console.error('Error saving plan:', error);
       alert('Failed to save your plan. Please try again.');
+    } finally {
+      setIsLoading(false); // Reset loading state
+      setIsPopupOpen(false); // Close the popup
     }
-    setIsPopupOpen(false);
   };
 
-  const handleGenerateGoogleSheet = () => {
-    setActionType('generateSheet'); // Set action type for generating Google Sheet
-    setIsPopupOpen(true);
-  };
-
-  const handleEmailMyPlan = () => {
-    setActionType('emailPlan'); // Set action type for emailing the plan
-    setIsPopupOpen(true);
+  const handleGenerateGoogleSheet = async () => {
+    setIsPopupOpen(true); // Open the email popup
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`min-h-screen flex flex-col ${isLoading ? 'pointer-events-none opacity-50' : ''}`}>
       <Header />
       <main className="flex-grow flex items-center justify-center bg-gray-100">
         <div className="bg-white bg-opacity-90 p-8 rounded shadow-lg max-w-4xl w-full">
@@ -154,14 +113,16 @@ export default function FinalResultsPage() {
               Back to Home
             </Link>
             <button
-              onClick={handleEmailMyPlan}
+              onClick={() => setIsPopupOpen(true)}
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
+              disabled={isLoading} // Disable button if loading
             >
               Email My Plan
             </button>
             <button
               onClick={handleGenerateGoogleSheet}
               className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
+              disabled={isLoading} // Disable button if loading
             >
               Generate Google Sheet
             </button>
@@ -173,6 +134,11 @@ export default function FinalResultsPage() {
         onClose={() => setIsPopupOpen(false)}
         onSubmit={handleEmailSubmit}
       />
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <h1 className="text-black text-2xl">Processing your request...</h1>
+        </div>
+      )}
     </div>
   );
 }

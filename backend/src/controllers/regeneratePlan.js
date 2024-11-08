@@ -93,11 +93,11 @@ const regeneratePlan = async (req, res) => {
           "day_7": { /* Similar structure for day 7 */ }
         },
         "diet_macros": {
-          "total_calories_needed": 2000,
+          "total_calories_needed": x ,
           "macronutrients": {
-            "protein": "150g",
-            "carbohydrates": "250g",
-            "fats": "60g"
+            "protein": "yg",
+            "carbohydrates": "zg",
+            "fats": "wg"
           }
         },
         "plan_adjustments": [
