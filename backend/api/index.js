@@ -33,10 +33,13 @@ app.use('/api', regenerateRoutes);
 app.use('/api', planRoutes);
 app.use('/api', googleSheetRoutes);
 
+app.get('/home', (req, res) => {
+  res.json({ message: 'Welcome to the SweatandSnack API!' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
 
 // Export the express app as a serverless function
 // module.exports = (req, res) => {
