@@ -151,7 +151,8 @@ export default function ResultsPage() {
       const formData = getFromSession('formData');
       const previousPlan = getFromSession('aiGeneratedPlan');
 
-      const response = await axios.post('http://localhost:5000/api/regenerate-plan', {
+      // const response = await axios.post('http://localhost:5000/api/regenerate-plan', {
+        const response = await axios.post('https://sweatand-snack.vercel.app/api/regenerate-plan', {
         formData,
         feedback,
         aiGeneratedPlan: previousPlan
