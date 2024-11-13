@@ -1,9 +1,51 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/functions.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "routes/googleSheetRoutes.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "routes/planRoutes.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "routes/questionarrieRoutes.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "routes/regenerateRoutes.js",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
-      "src": "/api/(.*)",   
-      "dest": "api/index.js"  
+      "src": "/api/.*",
+      "dest": "/api/functions.js"
+    },
+    {
+      "src": "/routes/googleSheetRoutes",
+      "dest": "/routes/googleSheetRoutes.js"
+    },
+    {
+      "src": "/routes/planRoutes",
+      "dest": "/routes/planRoutes.js"
+    },
+    {
+      "src": "/routes/questionarrieRoutes",
+      "dest": "/routes/questionarrieRoutes.js"
+    },
+    {
+      "src": "/routes/regenerateRoutes",
+      "dest": "/routes/regenerateRoutes.js"
     }
   ]
 }
