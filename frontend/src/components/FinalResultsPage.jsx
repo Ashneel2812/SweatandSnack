@@ -51,14 +51,23 @@ const PlanDisplay = ({ plan }) => {
         </div>
       ))}
 
+
       <h3 className="text-xl font-bold mb-4 mt-8">Diet Macros</h3>
-      {plan.diet_macros && (
+      {plan.diet_macros ? (
         <>
-          <p>Total Calories: {plan.diet_macros.total_calories_needed}</p>
-          <p>Protein: {plan.diet_macros.macronutrients.protein}</p>
-          <p>Carbohydrates: {plan.diet_macros.macronutrients.carbohydrates}</p>
-          <p>Fats: {plan.diet_macros.macronutrients.fats}</p>
+          <p>Total Calories: {plan.diet_macros.calories_needed || plan.diet_macros.total_calories_needed || 'N/A'}</p>
+          {plan.diet_macros.macronutrients ? (
+            <>
+              <p>Protein: {plan.diet_macros.macronutrients.protein || 'N/A'}</p>
+              <p>Carbohydrates: {plan.diet_macros.macronutrients.carbs || plan.diet_macros.macronutrients.carbohydrates || 'N/A'}</p>
+              <p>Fats: {plan.diet_macros.macronutrients.fats || 'N/A'}</p>
+            </>
+          ) : (
+            <p>Macronutrient information not available</p>
+          )}
         </>
+      ) : (
+        <p>Diet macros information not available</p>
       )}
     </div>
   );
@@ -67,31 +76,54 @@ const PlanDisplay = ({ plan }) => {
 export default function FinalResultsPage() {
   const location = useLocation();
   const finalPlan = location.state?.finalPlan;
+  const dietMacros = location.state?.dietMacros; // Access diet macros
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // New loading state
+  const [emailAction, setEmailAction] = useState(''); // To determine which action to take
+  const [email, setEmail] = useState(''); // State for email input
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
 
   const handleEmailSubmit = async (email) => {
     setIsLoading(true); // Set loading to true
     try {
-      const response = await axios.post('http://localhost:5000/api/email-plan', {
-        email,
-        dietPlan: finalPlan.diet_plan,
-        workoutPlan: finalPlan.workout_plan,
-        dietMacros: finalPlan.diet_macros
-      });
-      console.log('Plan saved:', response.data);
-      alert('Your plan has been saved and will be emailed to you shortly!');
+      if (emailAction === 'email-plan') {
+        const response = await axios.post('http://localhost:5000/api/email-plan', {
+          email,
+          dietPlan: finalPlan.diet_plan,
+          workoutPlan: finalPlan.workout_plan,
+          dietMacros: finalPlan.diet_macros // Ensure dietMacros is included
+        });
+        console.log('Plan saved:', response.data);
+        alert('Your plan has been saved and will be emailed to you shortly!');
+      } else if (emailAction === 'generate-google-sheet') {
+        const response = await axios.post('http://localhost:5000/api/generate-google-sheet', {
+          email,
+          workoutPlan: finalPlan.workout_plan,
+           // Send the email input
+        });
+        console.log('Google Sheet generated:', response.data);
+        alert('Google Sheet generated successfully and sent to your email!');
+      }
     } catch (error) {
-      console.error('Error saving plan:', error);
-      alert('Failed to save your plan. Please try again.');
+      console.error('Error processing request:', error);
+      alert('Failed to process your request. Please try again.');
     } finally {
       setIsLoading(false); // Reset loading state
       setIsPopupOpen(false); // Close the popup
     }
   };
 
-  const handleGenerateGoogleSheet = async () => {
-    setIsPopupOpen(true); // Open the email popup
+  const handleGenerateGoogleSheet = () => {
+    setEmailAction('generate-google-sheet'); // Set action for generating Google Sheet
+    setIsPopupOpen(true); // Open the email input popup
+  };
+
+  const handleEmailPlan = () => {
+    setEmailAction('email-plan'); // Set action for emailing the plan
+    setIsPopupOpen(true); // Open the email input popup
   };
 
   return (
@@ -113,18 +145,18 @@ export default function FinalResultsPage() {
               Back to Home
             </Link>
             <button
-              onClick={() => setIsPopupOpen(true)}
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
+              onClick={handleEmailPlan}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
               disabled={isLoading} // Disable button if loading
             >
-              Email My Plan
+              Email Plan
             </button>
             <button
               onClick={handleGenerateGoogleSheet}
-              className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block mb-2"
               disabled={isLoading} // Disable button if loading
             >
-              Generate Google Sheet
+              Generate Workout Tracker
             </button>
           </div>
         </div>
@@ -132,7 +164,7 @@ export default function FinalResultsPage() {
       <EmailPopup
         isOpen={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}
-        onSubmit={handleEmailSubmit}
+        onSubmit={handleEmailSubmit} // Pass the email submission handler
       />
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

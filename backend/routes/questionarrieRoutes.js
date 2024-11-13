@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { submitQuestionnaire } = require('../controllers/questionarrieSubmit');
+const { submitQuestionnaire } = require('../routes/controllers/questionarrieSubmit');
 
 router.post('/submit-questionnaire', submitQuestionnaire);
 
