@@ -1,7 +1,7 @@
-const { submitQuestionnaire } = require('../controllers/questionarrieSubmit');
-const { createGoogleSheet } = require('../controllers/googleSheetController');
-const { regeneratePlan } = require('../controllers/regeneratePlan');
-const { savePlan } = require('../controllers/savePlan');
+const { submitQuestionnaire } = require('../routes/controllers/questionarrieSubmit');
+const { createGoogleSheet } = require('../routes/controllers/googleSheetController');
+const { regeneratePlan } = require('../routes/controllers/regeneratePlan');
+const { savePlan } = require('../routes/controllers/savePlan');
 
 module.exports = async (req, res) => {
   // Check the request method and handle different routes accordingly
