@@ -28,7 +28,7 @@
   ],
   "functions": {
     "api/functions.js": {
-      "maxDuration": 6000
+      "maxDuration": 900
     }
   },
   "routes": [
