@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 
 // Create a new Bull queue
 const emailQueue = new Bull('emailQueue', {
-  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt' }, // Redis server connection
+  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt' ,maxClients: 100 }, // Redis server connection
 });
 
 // Define a job processor for sending emails
