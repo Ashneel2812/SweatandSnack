@@ -6,11 +6,11 @@ const { Queue, Worker } = require('bullmq');
 
 // Define a Redis queue for processing emails and sheet creation
 const createGoogleSheetQueue = new Bull('create-google-sheet', {
-  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt'  ,maxClients: 100}, // Update Redis connection details as needed
+  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt'  ,maxClients: 10000}, // Update Redis connection details as needed
 });
 
 const sendEmailQueue = new Bull('send-email', {
-  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt' ,maxClients: 100 }, // Update Redis connection details as needed
+  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt' ,maxClients: 10000 }, // Update Redis connection details as needed
 });
 
 // Path to credentials and other constants

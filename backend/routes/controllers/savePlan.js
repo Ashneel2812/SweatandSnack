@@ -1,8 +1,29 @@
-// savePlan.js
 require('dotenv').config();
 const Plan = require('../models/Plan');
-const emailQueue = require('../queue'); // Import the email queue
+const nodemailer = require('nodemailer');
+const Bull = require('bull');
+const path = require('path');
 
+// Define Redis queues for saving plans and sending email
+const savePlanQueue = new Bull('save-plan', {
+  redis: {
+    host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
+    port: 12299,
+    password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+    maxClients: 10000,  // Adjust max clients as per Redis configuration
+  },
+});
+
+const sendEmailQueue = new Bull('send-email', {
+  redis: {
+    host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
+    port: 12299,
+    password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+    maxClients: 10000,
+  },
+});
+
+// Function to save plan and enqueue the email job
 const savePlan = async (req, res) => {
   try {
     const { email, dietPlan, workoutPlan, dietMacros } = req.body;
@@ -34,6 +55,28 @@ const savePlan = async (req, res) => {
       });
       await newPlan.save(); // Save the new plan
     }
+
+    // Add a job to the savePlanQueue to process the email after saving the plan
+    const job = await savePlanQueue.add('save-plan', {
+      email,
+      dietPlan,
+      workoutPlan,
+      dietMacros,
+    });
+
+    // Respond immediately to the user
+    res.status(201).json({ message: 'Plan saved successfully. Email will be sent shortly.' });
+
+  } catch (error) {
+    console.error('Error saving plan:', error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+  }
+};
+
+// Process the "save-plan" job in the queue
+savePlanQueue.process('save-plan', async (job) => {
+  try {
+    const { email, dietPlan, workoutPlan, dietMacros } = job.data;
 
     // Generate the email body HTML
     let emailBody = `<h1>Your Plan Has Been Saved Successfully!</h1>`;
@@ -76,19 +119,45 @@ const savePlan = async (req, res) => {
     emailBody += `<p>In case of any queries, send an email to: sweatandsnack2024@gmail.com</p>`;
     emailBody += `<p>Thank you for using our service!</p>`;
 
-    // Enqueue the email job
-    await emailQueue.add({
+    // Add the send email job to the sendEmailQueue
+    await sendEmailQueue.add('send-email', {
       email,
       emailBody,
     });
 
-    // Respond immediately to the user
-    res.status(201).json({ message: 'Plan saved successfully. Email will be sent shortly.' });
-
   } catch (error) {
-    console.error('Error saving plan or enqueuing email:', error);
-    res.status(500).json({ error: 'Internal server error', details: error.message });
+    console.error('Error processing save-plan job:', error);
+    throw new Error('Error processing save-plan job');
   }
-};
+});
+
+// Process the "send-email" job in the queue
+sendEmailQueue.process('send-email', async (job) => {
+  try {
+    const { email, emailBody } = job.data;
+
+    // Configure the email transporter (using Gmail for example)
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER || 'iashneel@gmail.com',  // Your email
+        pass: process.env.EMAIL_PASSWORD || 'xdga zgbn pcst aqnx',  // App-specific password or regular password
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'iashneel@gmail.com',
+      to: email,
+      subject: 'Your Diet and Workout Plan',
+      html: emailBody,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`Email sent to: ${email}`);
+  } catch (error) {
+    console.error(`Error sending email to ${email}:`, error);
+    throw new Error(`Error sending email: ${error.message}`);
+  }
+});
 
 module.exports = { savePlan };
