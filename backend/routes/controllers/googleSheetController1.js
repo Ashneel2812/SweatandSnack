@@ -1,52 +1,22 @@
 const { google } = require('googleapis');
 const nodemailer = require('nodemailer');
 const path = require('path');
-const Bull = require('bull');
-const { Queue, Worker } = require('bullmq');
 
-// Define a Redis queue for processing emails and sheet creation
-const createGoogleSheetQueue = new Bull('create-google-sheet', {
-  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt' }, // Update Redis connection details as needed
-});
-
-const sendEmailQueue = new Bull('send-email', {
-  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt' }, // Update Redis connection details as needed
-});
-
-// Path to credentials and other constants
+// Load client secrets from a local file.
 const CREDENTIALS_PATH = path.join(__dirname, '../credentials.json');
 const SCOPES = [
   'https://www.googleapis.com/auth/spreadsheets',
   'https://www.googleapis.com/auth/drive.file'
 ];
 
-// Function to add Google Sheets creation job to the Redis queue
 const createGoogleSheet = async (req, res) => {
-  try {
-    const { email, workoutPlan } = req.body;
-    
-    // Add a job to the queue to process Google Sheet creation asynchronously
-    const job = await createGoogleSheetQueue.add('create-sheet', {
-      email,
-      workoutPlan,
-    });
-
-    // Return response immediately while the job is processed in the background
-    res.status(201).json({ message: 'Your request is being processed. You will be notified via email.' });
-  } catch (error) {
-    console.error('Error queuing job for Google Sheet creation:', error);
-    res.status(500).json({ error: 'Internal server error', details: error.message });
-  }
-};
-
-// Function to handle the job of creating Google Sheet and sending the email
-createGoogleSheetQueue.process('create-sheet', async (job) => {
-  try {
-    const { email, workoutPlan } = job.data;
+  try{
     const auth = new google.auth.GoogleAuth({
       keyFile: CREDENTIALS_PATH,
       scopes: SCOPES,
     });
+
+    const {email,workoutPlan}=req.body
 
     const sheets = google.sheets({ version: 'v4', auth });
     const drive = google.drive({ version: 'v3', auth });
@@ -56,7 +26,13 @@ createGoogleSheetQueue.process('create-sheet', async (job) => {
       properties: {
         title: `Workout Plan - ${email}`,
       },
-      sheets: [{ properties: { title: 'Workout' } }],
+      sheets: [
+        {
+          properties: {
+            title: 'Workout',
+          },
+        },
+      ],
     };
 
     const spreadsheet = await sheets.spreadsheets.create({ resource });
@@ -64,9 +40,15 @@ createGoogleSheetQueue.process('create-sheet', async (job) => {
 
     // Prepare data for the sheet
     const values = [['Day', 'Session', 'Exercise', 'Sets', 'Reps', 'Tempo', 'Performance Notes', 'Date']];
+
+    // Convert the workoutPlan object to an array
     Object.keys(workoutPlan).forEach((day, index) => {
       const dayData = workoutPlan[day];
-      values.push([`Day ${index + 1}`, dayData.session, '', '', '', '', '', '']);
+      
+      // Add the session row with highlight
+      values.push([`Day ${index + 1}`, dayData.session, '', '', '', '', '', '']); 
+
+      // Add the exercises under the session, leaving 'Performance Notes' and 'Date' empty for user input
       dayData.exercises.forEach((exercise) => {
         values.push(['', '', exercise.exercise, exercise.sets, exercise.reps, exercise.tempo, '', '']);
       });
@@ -84,28 +66,24 @@ createGoogleSheetQueue.process('create-sheet', async (job) => {
     await drive.permissions.create({
       fileId: spreadsheetId,
       requestBody: {
-        role: 'writer',
-        type: 'user',
-        emailAddress: email,
+        role: 'writer', // 'reader' for view-only, 'writer' for edit access
+        type: 'user',   // sharing with a specific user
+        emailAddress: email, // the email address to share with
       },
       sendNotificationEmail: false,
     });
 
-    // Add the send email job to the queue
-    await sendEmailQueue.add('send-email', {
-      email,
-      spreadsheetId,
-    });
-  } catch (error) {
-    console.error('Error in creating Google Sheet job:', error);
-    throw new Error('Error creating Google Sheet');
+    // Send the link to the user via email
+    await sendEmail(email, spreadsheetId);
+    res.status(201).json({ message: 'Google Sheet saved successfully and email sent!' });
+  } 
+  catch (error) {
+    console.error('Error saving plan or sending email:', error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
-});
+};
 
-// Function to handle sending email after Google Sheet is created
-sendEmailQueue.process('send-email', async (job) => {
-  try {
-    const { email, spreadsheetId } = job.data;
+const sendEmail = async (email, spreadsheetId) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -125,21 +103,19 @@ sendEmailQueue.process('send-email', async (job) => {
       3. The image attached shows how to log the data in order to track the progress.
       4.In case the google sheet is asking for permission , change the google account to which you requested the google sheet.
       
-      In case of any queries , send an email to :sweatandsnack2024@gmail.com`,
+      In case of any queries , send an email to :sweatandsnack2024@gmail.com
+      `,
       attachments: [
         {
-          filename: 'Sample_Sheet.png', 
-          path: path.join(__dirname, '../google_sheet_sample.png'), 
+          filename: 'Sample_Sheet.png', // Name of the file as it will appear in the email
+          path: path.join(__dirname, '../google_sheet_sample.png'), // Adjust the path to your image
         },
       ],
     };
 
     await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully');
-  } catch (error) {
-    console.error('Error sending email:', error);
-    throw new Error('Error sending email');
-  }
-});
+  
+
+};
 
 module.exports = { createGoogleSheet };

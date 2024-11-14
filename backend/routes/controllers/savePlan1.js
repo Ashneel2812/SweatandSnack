@@ -1,16 +1,16 @@
-// savePlan.js
 require('dotenv').config();
+const nodemailer = require('nodemailer');
 const Plan = require('../models/Plan');
-const emailQueue = require('../queue'); // Import the email queue
 
 const savePlan = async (req, res) => {
   try {
     const { email, dietPlan, workoutPlan, dietMacros } = req.body;
 
-    // Log input for debugging
-    console.log(email, dietPlan, workoutPlan, dietMacros);
+    console.log(email);
+    console.log(dietPlan);
+    console.log(workoutPlan);
+    console.log(dietMacros);
 
-    // Check for missing required fields
     if (!email || !dietPlan || !workoutPlan || !dietMacros) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -23,6 +23,7 @@ const savePlan = async (req, res) => {
       existingPlan.dietPlan = dietPlan;
       existingPlan.workoutPlan = workoutPlan;
       existingPlan.dietMacros = dietMacros;
+
       await existingPlan.save(); // Save the updated plan
     } else {
       // Create a new plan if it doesn't exist
@@ -30,16 +31,25 @@ const savePlan = async (req, res) => {
         email,
         dietPlan,
         workoutPlan,
-        dietMacros,
+        dietMacros
       });
+
       await newPlan.save(); // Save the new plan
     }
 
-    // Generate the email body HTML
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'iashneel@gmail.com',
+        pass: 'xdga zgbn pcst aqnx' // Use environment variables for security
+      }
+    });
+
+    // Construct the email body
     let emailBody = `<h1>Your Plan Has Been Saved Successfully!</h1>`;
     emailBody += `<h2>Here are the details:</h2>`;
-
-    // Add Diet Plan to the email body
+    
+    // Diet Plan
     emailBody += `<h3>Diet Plan:</h3>`;
     for (const day in dietPlan) {
       emailBody += `<h4>${day.replace('_', ' ')}</h4>`;
@@ -53,7 +63,7 @@ const savePlan = async (req, res) => {
       }
     }
 
-    // Add Workout Plan to the email body
+    // Workout Plan
     emailBody += `<h3>Workout Plan:</h3>`;
     for (const day in workoutPlan) {
       emailBody += `<h4>${day.replace('_', ' ')}</h4>`;
@@ -64,7 +74,7 @@ const savePlan = async (req, res) => {
       });
     }
 
-    // Add Diet Macros to the email body
+    // Diet Macros
     emailBody += `<h3>Diet Macros:</h3>`;
     emailBody += `<p>Total Calories Needed: ${dietMacros.total_calories_needed}</p>`;
     emailBody += `<p>Protein: ${dietMacros.macronutrients.protein}</p>`;
@@ -76,17 +86,19 @@ const savePlan = async (req, res) => {
     emailBody += `<p>In case of any queries, send an email to: sweatandsnack2024@gmail.com</p>`;
     emailBody += `<p>Thank you for using our service!</p>`;
 
-    // Enqueue the email job
-    await emailQueue.add({
-      email,
-      emailBody,
-    });
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'iashneel@gmail.com',
+      to: email,
+      subject: 'Your Diet and Workout Plan',
+      html: emailBody,
+    };
 
-    // Respond immediately to the user
-    res.status(201).json({ message: 'Plan saved successfully. Email will be sent shortly.' });
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully');
 
+    res.status(201).json({ message: 'Plan saved successfully and email sent!' });
   } catch (error) {
-    console.error('Error saving plan or enqueuing email:', error);
+    console.error('Error saving plan or sending email:', error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 };
