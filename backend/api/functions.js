@@ -33,23 +33,19 @@ module.exports = async (req, res) => {
 
   if (req.method === 'POST' && req.url.includes('generate-sheet')) {
     try {
-      // Log the incoming request data
-      console.log('Received request to generate Google Sheet:', req.body);
+      // console.log('Received request to generate Google Sheet:', req.body);
   
-      const { email, workoutPlan } = req.body;
+      // const { email, workoutPlan } = req.body;
   
-      // Check for missing required fields
-      if (!email || !workoutPlan) {
-        console.error('Missing required fields. Email:', email, 'Workout Plan:', workoutPlan);
-        return res.status(400).json({ error: 'Missing required fields' });
-      }
+      // if (!email || !workoutPlan) {
+      //   console.error('Missing required fields. Email:', email, 'Workout Plan:', workoutPlan);
+      //   return res.status(400).json({ error: 'Missing required fields' });
+      // }
   
-      // Log the received fields before calling the function
-      console.log('Received email:', email);
-      console.log('Received workout plan:', workoutPlan);
+      // console.log('Received email:', email);
+      // console.log('Received workout plan:', workoutPlan);
   
-      // Call the function to create the Google Sheet
-      await createGoogleSheet(email, workoutPlan);
+      await createGoogleSheet(req, res);
       
       // Log success if everything goes as planned
       console.log('Google Sheet created and email sent successfully');
