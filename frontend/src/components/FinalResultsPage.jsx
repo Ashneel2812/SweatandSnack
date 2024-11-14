@@ -90,8 +90,8 @@ export default function FinalResultsPage() {
     setIsLoading(true); // Set loading to true
     try {
       if (emailAction === 'email-plan') {
-        // const response = await axios.post('http://localhost:5000/api/email-plan', {
-        const response = await axios.post('https://sweatand-snack.vercel.app//api/email-plan', {
+        const response = await axios.post('http://localhost:5000/api/email-plan', {
+        // const response = await axios.post('https://sweatand-snack.vercel.app//api/email-plan', {
           email,
           dietPlan: finalPlan.diet_plan,
           workoutPlan: finalPlan.workout_plan,
@@ -100,8 +100,8 @@ export default function FinalResultsPage() {
         console.log('Plan saved:', response.data);
         alert('Your plan has been saved and will be emailed to you shortly!');
       } else if (emailAction === 'generate-google-sheet') {
-        // const response = await axios.post('http://localhost:5000/api/generate-google-sheet', {
-          const response = await axios.post('https://sweatand-snack.vercel.app/api/generate-google-sheet', {
+        const response = await axios.post('http://localhost:5000/api/generate-google-sheet', {
+          // const response = await axios.post('https://sweatand-snack.vercel.app/api/generate-google-sheet', {
           email,
           workoutPlan: finalPlan.workout_plan,
            // Send the email input

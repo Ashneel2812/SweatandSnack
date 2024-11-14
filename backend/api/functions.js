@@ -17,15 +17,47 @@ module.exports = async (req, res) => {
   }
 
   // Handle generate-sheet
+  // if (req.method === 'POST' && req.url.includes('generate-sheet')) {
+  //   try {
+  //     const { email, workoutPlan } = req.body;
+  //     if (!email || !workoutPlan) {
+  //       return res.status(400).json({ error: 'Missing required fields' });
+  //     }
+  //     await createGoogleSheet(email, workoutPlan);
+  //     res.status(200).json({ message: 'Google Sheet created and sent to your email!' });
+  //   } catch (error) {
+  //     res.status(500).json({ error: 'Error in creating Google Sheet.', details: error.message });
+  //   }
+  //   return;
+  // }
+
   if (req.method === 'POST' && req.url.includes('generate-sheet')) {
     try {
+      // Log the incoming request data
+      console.log('Received request to generate Google Sheet:', req.body);
+  
       const { email, workoutPlan } = req.body;
+  
+      // Check for missing required fields
       if (!email || !workoutPlan) {
+        console.error('Missing required fields. Email:', email, 'Workout Plan:', workoutPlan);
         return res.status(400).json({ error: 'Missing required fields' });
       }
+  
+      // Log the received fields before calling the function
+      console.log('Received email:', email);
+      console.log('Received workout plan:', workoutPlan);
+  
+      // Call the function to create the Google Sheet
       await createGoogleSheet(email, workoutPlan);
+      
+      // Log success if everything goes as planned
+      console.log('Google Sheet created and email sent successfully');
+      
       res.status(200).json({ message: 'Google Sheet created and sent to your email!' });
     } catch (error) {
+      // Log any error that occurs in the try block
+      console.error('Error in creating Google Sheet:', error);
       res.status(500).json({ error: 'Error in creating Google Sheet.', details: error.message });
     }
     return;

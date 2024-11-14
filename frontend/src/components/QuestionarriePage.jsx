@@ -72,8 +72,8 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
         height,
       };
 
-      // const response = await axios.post('http://localhost:5000/api/submit-questionnaire', dataToSubmit);
-      const response = await axios.post('https://sweatand-snack.vercel.app/api/submit-questionnaire', dataToSubmit);
+      const response = await axios.post('http://localhost:5000/api/submit-questionnaire', dataToSubmit);
+      // const response = await axios.post('https://sweatand-snack.vercel.app/api/submit-questionnaire', dataToSubmit);
 
       if (response.data && response.data.aiGeneratedPlan) {
         saveToSession('aiGeneratedPlan', JSON.stringify(response.data.aiGeneratedPlan));
