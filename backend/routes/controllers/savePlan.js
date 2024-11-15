@@ -14,6 +14,7 @@ const savePlanQueue = new Bull('save-plan', {
   },
   settings: {
     retries: 5, // Number of retry attempts for this queue
+    backoff: 5000, // 5 seconds backoff between retries
   },
 });
 
@@ -26,6 +27,7 @@ const sendEmailQueue = new Bull('send-email', {
   },
   settings: {
     retries: 5, // Number of retry attempts for sending email
+    backoff: 5000, // 5 seconds backoff between retries
   },
 });
 
