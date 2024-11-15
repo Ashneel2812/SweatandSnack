@@ -12,6 +12,9 @@ const savePlanQueue = new Bull('save-plan', {
     password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
     maxClients: 10000,  // Adjust max clients as per Redis configuration
   },
+  settings: {
+    retries: 5, // Number of retry attempts for this queue
+  },
 });
 
 const sendEmailQueue = new Bull('send-email', {
@@ -20,6 +23,9 @@ const sendEmailQueue = new Bull('send-email', {
     port: 12299,
     password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
     maxClients: 10000,
+  },
+  settings: {
+    retries: 5, // Number of retry attempts for sending email
   },
 });
 
@@ -119,7 +125,7 @@ savePlanQueue.process('save-plan', async (job) => {
     emailBody += `<p>In case of any queries, send an email to: sweatandsnack2024@gmail.com</p>`;
     emailBody += `<p>Thank you for using our service!</p>`;
 
-    // Add the send email job to the sendEmailQueue
+    // Add the send email job to the sendEmailQueue (only if no error has occurred)
     await sendEmailQueue.add('send-email', {
       email,
       emailBody,
@@ -157,6 +163,9 @@ sendEmailQueue.process('send-email', async (job) => {
   } catch (error) {
     console.error(`Error sending email to ${email}:`, error);
     throw new Error(`Error sending email: ${error.message}`);
+  } finally {
+    // Ensure Redis client is closed after job is processed
+    sendEmailQueue.close();
   }
 });
 

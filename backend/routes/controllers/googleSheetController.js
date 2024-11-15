@@ -6,7 +6,7 @@ const { Queue, Worker } = require('bullmq');
 
 // Define a Redis queue for processing emails and sheet creation
 const createGoogleSheetQueue = new Bull('create-google-sheet', {
-  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt'  ,maxClients: 10000}, // Update Redis connection details as needed
+  redis: { host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', port: 12299 , password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt' ,maxClients: 10000}, // Update Redis connection details as needed
 });
 
 const sendEmailQueue = new Bull('send-email', {
@@ -99,6 +99,10 @@ createGoogleSheetQueue.process('create-sheet', async (job) => {
   } catch (error) {
     console.error('Error in creating Google Sheet job:', error);
     throw new Error('Error creating Google Sheet');
+  // } finally {
+  //   // Ensure Redis client is closed after job is processed
+  //   createGoogleSheetQueue.close();
+  //   sendEmailQueue.close();
   }
 });
 
@@ -139,7 +143,11 @@ sendEmailQueue.process('send-email', async (job) => {
   } catch (error) {
     console.error('Error sending email:', error);
     throw new Error('Error sending email');
-  }
+  } 
+  // finally {
+  //   // Ensure Redis client is closed after job is processed
+  //   sendEmailQueue.close();
+  // }
 });
 
 module.exports = { createGoogleSheet };
