@@ -1,24 +1,9 @@
 require('dotenv').config();
-const Plan = require('../models/Plan');
 const nodemailer = require('nodemailer');
 const Bull = require('bull');
-const path = require('path');
 
-// Define Redis queues for saving plans and sending email with unique names
-const savePlanQueue = new Bull('save-plan', {
-  redis: {
-    host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
-    port: 12299,
-    password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
-    maxClients: 10000,  // Adjust max clients as per Redis configuration
-  },
-  settings: {
-    retries: 5, // Number of retry attempts for this queue
-    backoff: 5000, // 5 seconds backoff between retries
-  },
-});
-
-const sendEmailQueue = new Bull('send-email-save-plan', {  // Changed queue name
+// Define Redis queues for sending email
+const sendEmailQueue = new Bull('send-email-save-plan', {
   redis: {
     host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
     port: 12299,
@@ -27,14 +12,15 @@ const sendEmailQueue = new Bull('send-email-save-plan', {  // Changed queue name
   },
   settings: {
     retries: 5, // Number of retry attempts for sending email
+    backoff: 5000, // 5 seconds backoff between retries
   },
 });
 
-// Function to save plan and enqueue the email job
+// Function to send the email (this function will be triggered when needed)
 const savePlan = async (req, res) => {
   try {
-    console.log('Received request to save plan...');
-    
+    console.log('Received request to send email...');
+
     const { email, dietPlan, workoutPlan, dietMacros } = req.body;
 
     // Log input for debugging
@@ -45,56 +31,6 @@ const savePlan = async (req, res) => {
       console.log('Error: Missing required fields');
       return res.status(400).json({ error: 'Missing required fields' });
     }
-
-    // Check if a plan with the given email already exists
-    const existingPlan = await Plan.findOne({ email });
-    console.log('Existing plan check:', existingPlan);
-
-    if (existingPlan) {
-      // Update the existing plan
-      console.log('Updating existing plan for email:', email);
-      existingPlan.dietPlan = dietPlan;
-      existingPlan.workoutPlan = workoutPlan;
-      existingPlan.dietMacros = dietMacros;
-      await existingPlan.save(); // Save the updated plan
-    } else {
-      // Create a new plan if it doesn't exist
-      console.log('Creating new plan for email:', email);
-      const newPlan = new Plan({
-        email,
-        dietPlan,
-        workoutPlan,
-        dietMacros,
-      });
-      await newPlan.save(); // Save the new plan
-    }
-
-    // Add a job to the savePlanQueue to process the email after saving the plan
-    console.log('Adding job to savePlanQueue...');
-    const job = await savePlanQueue.add('save-plan', {
-      email,
-      dietPlan,
-      workoutPlan,
-      dietMacros,
-    });
-    console.log('Job added to savePlanQueue:', job.id);
-
-    // Respond immediately to the user
-    console.log('Responding to the user...');
-    res.status(201).json({ message: 'Plan saved successfully. Email will be sent shortly.' });
-
-  } catch (error) {
-    console.error('Error saving plan:', error);
-    res.status(500).json({ error: 'Internal server error', details: error.message });
-  }
-};
-
-// Process the "save-plan" job in the queue
-savePlanQueue.process('save-plan', async (job) => {
-  try {
-    console.log(`Processing job in savePlanQueue: ${job.id}...`);
-
-    const { email, dietPlan, workoutPlan, dietMacros } = job.data;
 
     // Generate the email body HTML
     console.log('Generating email body...');
@@ -139,18 +75,22 @@ savePlanQueue.process('save-plan', async (job) => {
     emailBody += `<p>Thank you for using our service!</p>`;
 
     console.log('Adding job to sendEmailQueue...');
-    // Add the send email job to the sendEmailQueue (only if no error has occurred)
+    // Add the send email job to the sendEmailQueue
     await sendEmailQueue.add('send-email-save-plan', {
       email,
       emailBody,
     });
 
     console.log('Job added to sendEmailQueue.');
+
+    // Respond immediately to the user
+    res.status(201).json({ message: 'Email will be sent shortly.' });
+
   } catch (error) {
-    console.error('Error processing save-plan job:', error);
-    throw new Error('Error processing save-plan job');
+    console.error('Error processing request:', error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
-});
+};
 
 // Process the "send-email" job in the queue
 sendEmailQueue.process('send-email-save-plan', async (job) => {
