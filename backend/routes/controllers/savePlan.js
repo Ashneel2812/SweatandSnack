@@ -34,27 +34,33 @@ const sendEmailQueue = new Bull('send-email', {
 // Function to save plan and enqueue the email job
 const savePlan = async (req, res) => {
   try {
+    console.log('Received request to save plan...');
+    
     const { email, dietPlan, workoutPlan, dietMacros } = req.body;
 
     // Log input for debugging
-    console.log(email, dietPlan, workoutPlan, dietMacros);
+    console.log('Request body:', { email, dietPlan, workoutPlan, dietMacros });
 
     // Check for missing required fields
     if (!email || !dietPlan || !workoutPlan || !dietMacros) {
+      console.log('Error: Missing required fields');
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
     // Check if a plan with the given email already exists
     const existingPlan = await Plan.findOne({ email });
+    console.log('Existing plan check:', existingPlan);
 
     if (existingPlan) {
       // Update the existing plan
+      console.log('Updating existing plan for email:', email);
       existingPlan.dietPlan = dietPlan;
       existingPlan.workoutPlan = workoutPlan;
       existingPlan.dietMacros = dietMacros;
       await existingPlan.save(); // Save the updated plan
     } else {
       // Create a new plan if it doesn't exist
+      console.log('Creating new plan for email:', email);
       const newPlan = new Plan({
         email,
         dietPlan,
@@ -65,14 +71,17 @@ const savePlan = async (req, res) => {
     }
 
     // Add a job to the savePlanQueue to process the email after saving the plan
+    console.log('Adding job to savePlanQueue...');
     const job = await savePlanQueue.add('save-plan', {
       email,
       dietPlan,
       workoutPlan,
       dietMacros,
     });
+    console.log('Job added to savePlanQueue:', job.id);
 
     // Respond immediately to the user
+    console.log('Responding to the user...');
     res.status(201).json({ message: 'Plan saved successfully. Email will be sent shortly.' });
 
   } catch (error) {
@@ -84,9 +93,12 @@ const savePlan = async (req, res) => {
 // Process the "save-plan" job in the queue
 savePlanQueue.process('save-plan', async (job) => {
   try {
+    console.log(`Processing job in savePlanQueue: ${job.id}...`);
+
     const { email, dietPlan, workoutPlan, dietMacros } = job.data;
 
     // Generate the email body HTML
+    console.log('Generating email body...');
     let emailBody = `<h1>Your Plan Has Been Saved Successfully!</h1>`;
     emailBody += `<h2>Here are the details:</h2>`;
 
@@ -127,12 +139,14 @@ savePlanQueue.process('save-plan', async (job) => {
     emailBody += `<p>In case of any queries, send an email to: sweatandsnack2024@gmail.com</p>`;
     emailBody += `<p>Thank you for using our service!</p>`;
 
+    console.log('Adding job to sendEmailQueue...');
     // Add the send email job to the sendEmailQueue (only if no error has occurred)
     await sendEmailQueue.add('send-email', {
       email,
       emailBody,
     });
 
+    console.log('Job added to sendEmailQueue.');
   } catch (error) {
     console.error('Error processing save-plan job:', error);
     throw new Error('Error processing save-plan job');
@@ -142,9 +156,12 @@ savePlanQueue.process('save-plan', async (job) => {
 // Process the "send-email" job in the queue
 sendEmailQueue.process('send-email', async (job) => {
   try {
+    console.log(`Processing email send job in sendEmailQueue: ${job.id}...`);
+
     const { email, emailBody } = job.data;
 
     // Configure the email transporter (using Gmail for example)
+    console.log('Configuring email transporter...');
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -160,6 +177,7 @@ sendEmailQueue.process('send-email', async (job) => {
       html: emailBody,
     };
 
+    console.log('Sending email...');
     await transporter.sendMail(mailOptions);
     console.log(`Email sent to: ${email}`);
   } catch (error) {
@@ -167,6 +185,7 @@ sendEmailQueue.process('send-email', async (job) => {
     throw new Error(`Error sending email: ${error.message}`);
   } finally {
     // Ensure Redis client is closed after job is processed
+    console.log('Closing sendEmailQueue...');
     sendEmailQueue.close();
   }
 });
