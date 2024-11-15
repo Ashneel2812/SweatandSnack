@@ -27,7 +27,6 @@ const sendEmailQueue = new Bull('send-email-save-plan', {  // Changed queue name
   },
   settings: {
     retries: 5, // Number of retry attempts for sending email
-    backoff: 5000, // 5 seconds backoff between retries
   },
 });
 
