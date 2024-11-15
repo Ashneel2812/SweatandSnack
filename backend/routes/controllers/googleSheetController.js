@@ -2,25 +2,27 @@ const { google } = require('googleapis');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const Bull = require('bull');
-const { Queue, Worker } = require('bullmq');
+const Redis = require('ioredis'); // Import ioredis to manage the Redis connection
 
-// Define a Redis queue for processing emails and sheet creation
+// Define Redis configuration
+const REDIS_CONFIG = {
+  host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: 12299,
+  password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+  maxClients: 10000,
+};
+
+// Create a Redis connection using ioredis
+const redis = new Redis(REDIS_CONFIG);
+
+// Define the Bull queue for Google Sheet creation
 const createGoogleSheetQueue = new Bull('create-google-sheet', {
-  redis: { 
-    host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', 
-    port: 12299, 
-    password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt', 
-    maxClients: 10000 
-  }, // Update Redis connection details as needed
+  redis: REDIS_CONFIG, // Pass the Redis connection details to the Bull queue
 });
 
+// Define the Bull queue for sending emails
 const sendEmailQueue = new Bull('send-email', {
-  redis: { 
-    host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com', 
-    port: 12299, 
-    password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt', 
-    maxClients: 10000 
-  }, // Update Redis connection details as needed
+  redis: REDIS_CONFIG, // Pass the Redis connection details to the Bull queue
 });
 
 // Path to credentials and other constants
@@ -52,7 +54,7 @@ const createGoogleSheet = async (req, res) => {
   }
 };
 
-// Function to handle the job of creating Google Sheet and sending the email
+// Worker to process the job of creating Google Sheets
 createGoogleSheetQueue.process('create-sheet', async (job) => {
   try {
     console.log('Processing job in createGoogleSheetQueue:', job.id);
@@ -115,7 +117,7 @@ createGoogleSheetQueue.process('create-sheet', async (job) => {
 
     console.log(`Permissions set to share the Google Sheet with ${email}`);
 
-    // Add the send email job to the queue
+    // Add the send email job to the Bull queue
     await sendEmailQueue.add('send-email', {
       email,
       spreadsheetId,
@@ -128,7 +130,7 @@ createGoogleSheetQueue.process('create-sheet', async (job) => {
   }
 });
 
-// Function to handle sending email after Google Sheet is created
+// Worker to handle sending email after Google Sheet is created
 sendEmailQueue.process('send-email', async (job) => {
   try {
     console.log('Processing job in sendEmailQueue:', job.id);
@@ -173,4 +175,5 @@ sendEmailQueue.process('send-email', async (job) => {
   }
 });
 
+// Export the function for use elsewhere in the app
 module.exports = { createGoogleSheet };

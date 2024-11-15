@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const Bull = require('bull');
 const path = require('path');
 
-// Define Redis queues for saving plans and sending email
+// Define Redis queues for saving plans and sending email with unique names
 const savePlanQueue = new Bull('save-plan', {
   redis: {
     host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
@@ -18,7 +18,7 @@ const savePlanQueue = new Bull('save-plan', {
   },
 });
 
-const sendEmailQueue = new Bull('send-email', {
+const sendEmailQueue = new Bull('send-email-save-plan', {  // Changed queue name
   redis: {
     host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
     port: 12299,
@@ -141,7 +141,7 @@ savePlanQueue.process('save-plan', async (job) => {
 
     console.log('Adding job to sendEmailQueue...');
     // Add the send email job to the sendEmailQueue (only if no error has occurred)
-    await sendEmailQueue.add('send-email', {
+    await sendEmailQueue.add('send-email-save-plan', {
       email,
       emailBody,
     });
@@ -154,7 +154,7 @@ savePlanQueue.process('save-plan', async (job) => {
 });
 
 // Process the "send-email" job in the queue
-sendEmailQueue.process('send-email', async (job) => {
+sendEmailQueue.process('send-email-save-plan', async (job) => {
   try {
     console.log(`Processing email send job in sendEmailQueue: ${job.id}...`);
 
