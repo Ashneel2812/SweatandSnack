@@ -16,19 +16,19 @@ app.use(express.json());
 
 const uri = 'mongodb+srv://dbUser:dbUserPassword@sweatandsnack.5nd6x.mongodb.net/SweatandSnack?retryWrites=true&w=majority&appName=SweatandSnack';
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('MongoDB connected successfully');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-  }
-};
+// const connectDB = async () => {
+//   try {
+//     await mongoose.connect(uri, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     });
+//     console.log('MongoDB connected successfully');
+//   } catch (error) {
+//     console.error('MongoDB connection error:', error);
+//   }
+// };
 
-connectDB();
+// connectDB();
 
 app.use('/api', questionnaireRoutes);
 app.use('/api', regenerateRoutes);
