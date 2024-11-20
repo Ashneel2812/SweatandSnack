@@ -11,7 +11,10 @@ const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan');
 
 const express = require('express');
 const app = express();
-app.use(cors());
+const allowedOrigins = 'https://sweatand-snack.vercel.app';
+app.use(cors({
+  origin: allowedOrigins
+}));
 
 // Initialize Redis connection and Bull queues
 const queueGeneratePlan = new Queue('generatePlan', {
@@ -86,10 +89,6 @@ console.log('Worker initialization complete');
 // Main function to handle routes and API requests
 module.exports = async (req, res) => {
 
-  // Handle preflight OPTIONS request
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end(); // Respond to preflight with status 200
-  }
   if (req.method === 'POST' && req.url.includes('submit-questionnaire')) {
     try {
       await submitQuestionnaire(req, res);
