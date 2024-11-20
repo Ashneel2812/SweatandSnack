@@ -10,15 +10,9 @@ const {getJobStatus} = require('../routes/controllers/jobStatusController')
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
 
+const express = require('express');
+const app = express();
 app.use(cors());
-
-// OR Configure CORS for specific routes or origins
-app.use(cors({
-  origin: 'https://sweatand-snack.vercel.app', // allow requests only from specific origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // specify allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // specify allowed headers
-}));
-
 // Initialize Redis connection and Bull queues
 const queueGeneratePlan = new Queue('generatePlan', {
   host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
