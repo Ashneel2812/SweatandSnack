@@ -1,4 +1,5 @@
 // Import necessary modules
+const cors = require('cors');
 const Queue = require('bull');
 const { OpenAI } = require('openai');
 const { submitQuestionnaire } = require('../routes/controllers/questionarrieSubmit');
@@ -8,6 +9,15 @@ const { savePlan } = require('../routes/controllers/savePlan');
 const {getJobStatus} = require('../routes/controllers/jobStatusController')
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
+
+app.use(cors());
+
+// OR Configure CORS for specific routes or origins
+app.use(cors({
+  origin: 'https://sweatand-snack.vercel.app', // allow requests only from specific origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // specify allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // specify allowed headers
+}));
 
 // Initialize Redis connection and Bull queues
 const queueGeneratePlan = new Queue('generatePlan', {
