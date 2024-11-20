@@ -1,7 +1,6 @@
 // Import necessary modules
 const cors = require('cors');
 const Queue = require('bull');
-const { OpenAI } = require('openai');
 const { submitQuestionnaire } = require('../routes/controllers/questionarrieSubmit');
 const { createGoogleSheet } = require('../routes/controllers/googleSheetController');
 const { regeneratePlan } = require('../routes/controllers/regeneratePlan');
