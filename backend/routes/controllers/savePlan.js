@@ -11,11 +11,9 @@ const savePlanQueue = new Bull('save-plan', {
     host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
     port: 12299,
     password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
-    maxClients: 10000,  // Adjust max clients as per Redis configuration
-  },
-  settings: {
-    retries: 5, // Number of retry attempts for this queue
-    backoff: 5000, // 5 seconds backoff between retries
+    settings: {
+      connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+    }// 5 seconds backoff between retries
   },
 });
 
@@ -24,10 +22,9 @@ const sendEmailQueue = new Bull('send-email-save-plan', {  // Changed queue name
     host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
     port: 12299,
     password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
-    maxClients: 10000,
-  },
-  settings: {
-    retries: 5, // Number of retry attempts for sending email
+    settings: {
+      connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+    } // Number of retry attempts for sending email
   },
 });
 

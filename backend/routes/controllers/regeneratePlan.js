@@ -11,12 +11,18 @@ const queueRegeneratePlan = new Queue('regeneratePlan', {
   host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
   port: 12299,
   password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+  settings: {
+    connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+  }
 });
 
 const jobQueue = new Queue('generatePlan', {
   host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
   port: 12299,
   password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+  settings: {
+    connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+  }
 });
 
 const regeneratePlanLogic = async (formData, feedback, aiGeneratedPlan) => {
