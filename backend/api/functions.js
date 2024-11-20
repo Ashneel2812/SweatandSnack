@@ -86,9 +86,6 @@ console.log('Worker initialization complete');
 
 // Main function to handle routes and API requests
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins or specify your domain
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Allowed methods
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allowed headers
 
   // Handle preflight OPTIONS request
   if (req.method === 'OPTIONS') {
