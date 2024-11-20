@@ -13,6 +13,14 @@ const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan');
 const express = require('express');
 const app = express();
 app.use(cors());
+
+app.options('*', (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.send();
+});
+
 // Initialize Redis connection and Bull queues
 const queueGeneratePlan = new Queue('generatePlan', {
   host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
@@ -85,6 +93,14 @@ console.log('Worker initialization complete');
 
 // Main function to handle routes and API requests
 module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins or specify your domain
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Allowed methods
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allowed headers
+
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end(); // Respond to preflight with status 200
+  }
   if (req.method === 'POST' && req.url.includes('submit-questionnaire')) {
     try {
       await submitQuestionnaire(req, res);
