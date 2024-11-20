@@ -23,7 +23,8 @@ const LoadingPage = () => {
     // Function to call the API and check job status
     const checkJobStatus = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/job-status/${jobId}`);
+        // const response = await axios.get(`http://localhost:5000/api/job-status/${jobId}`);
+        const response = await axios.get(`https://sweatand-snack.vercel.app/api/job-status/${jobId}`);
         if (response.data.status === "completed") {
           setLoadingMessage("Job completed!");
           navigate("/results", { state: { aiGeneratedPlan: response.data.result.plan } });
