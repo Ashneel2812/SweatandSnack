@@ -9,7 +9,6 @@ const REDIS_CONFIG = {
   host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
   port: 12299,
   password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
-  maxClients: 10000,
 };
 
 // Create a Redis connection using ioredis

@@ -59,28 +59,11 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
     onLoadingStart();
 
     try {
-      navigate('/loading', { state: { loadingMessage: 'Generating your personalized plan... Please wait!' } });
+      const response = await axios.post('http://localhost:5000/api/submit-questionnaire', formData);
+      console.log('Response from submit-questionnaire:', response.data);
       
-      // Convert height from ft/in to cm if necessary
-      let height = formData.height;
-      if (formData.heightUnit === 'ft') {
-        height = formData.heightFt * 30.48 + formData.heightIn * 2.54;
-      }
-
-      const dataToSubmit = {
-        ...formData,
-        height,
-      };
-
-      const response = await axios.post('http://localhost:5000/api/submit-questionnaire', dataToSubmit);
-      // const response = await axios.post('https://sweatand-snack.vercel.app/api/submit-questionnaire', dataToSubmit);
-
-      if (response.data && response.data.aiGeneratedPlan) {
-        saveToSession('aiGeneratedPlan', JSON.stringify(response.data.aiGeneratedPlan));
-        navigate('/results', { state: { aiGeneratedPlan: response.data.aiGeneratedPlan } });
-      } else {
-        console.error('Failed to submit questionnaire');
-      }
+      // Navigate to LoadingPage and pass the response data
+      navigate('/loading', { state: { responseData: response.data } });
     } catch (error) {
       console.error('Error submitting questionnaire:', error);
     } finally {

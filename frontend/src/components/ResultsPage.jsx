@@ -124,10 +124,8 @@ export default function ResultsPage() {
           } else {
             parsedPlan = planData;
           }
-          console.log('Parsed plan:', parsedPlan); // Add this line for debugging
           setPlan(parsedPlan);
         } catch (error) {
-          console.error('Error parsing plan:', error);
           setError('Error loading plan. Please try again.');
         }
       }
@@ -151,47 +149,48 @@ export default function ResultsPage() {
       const formData = getFromSession('formData');
       const previousPlan = getFromSession('aiGeneratedPlan');
 
-      // const response = await axios.post('http://localhost:5000/api/regenerate-plan', {
-        const response = await axios.post('https://sweatand-snack.vercel.app/api/regenerate-plan', {
+      const response = await axios.post('http://localhost:5000/api/regenerate-plan', {
         formData,
         feedback,
         aiGeneratedPlan: previousPlan
       });
 
-      if (response.data && response.data.aiGeneratedPlan) {
-        let newPlan = response.data.aiGeneratedPlan;
-        if (typeof newPlan === 'string') {
-          try {
-            // Remove any potential Markdown code block syntax
-            newPlan = newPlan.replace(/^```json\s*/, '').replace(/\s*```$/, '').trim();
-            newPlan = JSON.parse(newPlan);
-          } catch (error) {
-            console.error('Error parsing plan:', error);
-            console.error('Raw plan data:', newPlan);
-            setError(`Error parsing the regenerated plan: ${error.message}. Please try again.`);
-            return;
-          }
-        }
-        saveToSession('aiGeneratedPlan', JSON.stringify(newPlan));
-        setPlan(newPlan);
-        console.log('New Plan:', newPlan);
-
-        setShowTextbox(false);
-        setFeedback('');
-      } else {
-        setError('Failed to regenerate plan. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error submitting feedback:', error);
-      if (error.response && error.response.data) {
-        setError(`Error: ${error.response.data.error}. ${error.response.data.details || ''}`);
-        console.error('Raw server response:', error.response.data);
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
-    } finally {
-      setIsLoading(false);
-    }
+      // if (response.data && response.data.aiGeneratedPlan) {
+      //   let newPlan = response.data.aiGeneratedPlan;
+      //   if (typeof newPlan === 'string') {
+      //     try {
+      //       // Remove any potential Markdown code block syntax
+      //       newPlan = newPlan.replace(/^```json\s*/, '').replace(/\s*```$/, '').trim();
+      //       newPlan = JSON.parse(newPlan);
+      //     } catch (error) {
+      //       setError(`Error parsing the regenerated plan: ${error.message}. Please try again.`);
+      //       return;
+      //     }
+      //   }
+      //   saveToSession('aiGeneratedPlan', JSON.stringify(newPlan));
+      //   setPlan(newPlan);
+        
+        // Navigate to the loading page, passing the response data
+        navigate('/loading', { state: { responseData: response.data } });
+        
+    //     setShowTextbox(false);
+    //     setFeedback('');
+    //   } else {
+    //     setError('Failed to regenerate plan. Please try again.');
+    //   }
+    // } catch (error) {
+    //   console.error('Error submitting feedback:', error);
+    //   if (error.response && error.response.data) {
+    //     setError(`Error: ${error.response.data.error}. ${error.response.data.details || ''}`);
+    //   } else {
+    //     setError('An unexpected error occurred. Please try again.');
+    //   }
+    // } finally {
+    //   setIsLoading(false);
+    // }
+  } catch (error) {
+    console.error('Error submitting questionnaire:', error);
+  }
   };
 
   return (
@@ -210,7 +209,7 @@ export default function ResultsPage() {
           ) : (
             <p>No plan available. Please try again.</p>
           )}
-          
+
           <div className="mt-4">
             <p className="mb-2">Are you happy with these results?</p>
             <button onClick={handleHappy} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">

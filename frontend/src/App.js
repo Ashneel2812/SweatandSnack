@@ -24,6 +24,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/questionnaire" element={<QuestionnairePage onLoadingStart={handleLoadingStart} onLoadingEnd={handleLoadingEnd} />} />
         <Route path="/results" element={<ResultsPage />} />
+        <Route path="/loading" element={<LoadingPage />} />
         <Route path="/final-results" element={<FinalResultsPage />} />
       </Routes>
     </Router>

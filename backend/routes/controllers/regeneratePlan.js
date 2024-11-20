@@ -1,20 +1,26 @@
 const { OpenAI } = require('openai');
+const Queue = require('bull');
+const { v4: uuidv4 } = require('uuid'); // For generating unique job ID
 
 const openai = new OpenAI({
-  apiKey:'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'
+  apiKey: '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'
 });
 
-const removeComments = (jsonString) => {
-  return jsonString.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
-};
+// Initialize Bull Queue for Regenerate Plan
+const queueRegeneratePlan = new Queue('regeneratePlan', {
+  host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: 12299,
+  password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+});
 
-const regeneratePlan = async (req, res) => {
-  try {
-    const { formData, feedback, aiGeneratedPlan } = req.body;
-    
-    if (!formData || !aiGeneratedPlan) {
-      return res.status(400).json({ error: 'Form data and previous plan are required' });
-    }
+const jobQueue = new Queue('generatePlan', {
+  host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: 12299,
+  password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+});
+
+const regeneratePlanLogic = async (formData, feedback, aiGeneratedPlan) => {
+
 
     console.log('Received formData:', formData);
     console.log('Received feedback:', feedback);
@@ -110,19 +116,41 @@ const regeneratePlan = async (req, res) => {
 `;
 
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-    });
+  const response = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: prompt }],
+  });
 
-    res.status(200).json({ 
-      formData,
-      aiGeneratedPlan: completion.choices[0].message.content
-    });
+  const newPlan = response.choices[0].message.content;
+  return newPlan;
+};
+
+// Function to handle the API request and add job to the queue
+const regeneratePlan = async (req, res) => {
+  try {
+    const { formData, feedback, aiGeneratedPlan } = req.body;
+
+    if (!formData || !aiGeneratedPlan) {
+      return res.status(400).json({ error: 'Form data and previous plan are required' });
+    }
+
+    console.log('Received formData:', formData);
+    console.log('Received feedback:', feedback);
+    console.log('Received previous plan:', aiGeneratedPlan);
+
+    const jobId = uuidv4(); // Generate a unique job ID
+
+    // Add the job to the regeneratePlan queue for background processing
+    await jobQueue.add('generatePlan', {jobId,formData,feedback,aiGeneratedPlan});
+
+    // Respond immediately with the job ID
+    console.log(`Job ${jobId} added to queue for regeneration.`);
+    return res.status(200).json({ jobId });
   } catch (error) {
     console.error('Error regenerating plan:', error);
-    res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 };
 
-module.exports = { regeneratePlan };
+module.exports = { regeneratePlan, regeneratePlanLogic };
+
