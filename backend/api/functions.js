@@ -13,7 +13,7 @@ const express = require('express');
 const app = express();
 
 // CORS configuration
-const allowedOrigins = 'https://sweatand-snack.vercel.app'; // Frontend domain
+const allowedOrigins = 'https://sweatandsnack.vercel.app'; // Frontend domain
 app.use(cors({
   origin: allowedOrigins, // Allow only your frontend domain
   methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
