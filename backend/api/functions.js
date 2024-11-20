@@ -14,13 +14,6 @@ const express = require('express');
 const app = express();
 app.use(cors());
 
-app.options('*', (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.send();
-});
-
 // Initialize Redis connection and Bull queues
 const queueGeneratePlan = new Queue('generatePlan', {
   host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
