@@ -16,10 +16,6 @@ const queueGeneratePlan = new Queue('generatePlan', {
   password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
 });
 
-// Initialize OpenAI client with your API key
-const openai = new OpenAI({
-  apiKey: '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',
-});
 
 console.log('Initializing workers...');
 
