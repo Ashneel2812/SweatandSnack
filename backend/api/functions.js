@@ -5,15 +5,20 @@ const { submitQuestionnaire } = require('../routes/controllers/questionarrieSubm
 const { createGoogleSheet } = require('../routes/controllers/googleSheetController');
 const { regeneratePlan } = require('../routes/controllers/regeneratePlan');
 const { savePlan } = require('../routes/controllers/savePlan');
-const {getJobStatus} = require('../routes/controllers/jobStatusController')
+const { getJobStatus } = require('../routes/controllers/jobStatusController');
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
 
 const express = require('express');
 const app = express();
-const allowedOrigins = 'https://sweatand-snack.vercel.app';
+
+// CORS configuration
+const allowedOrigins = 'https://sweatand-snack.vercel.app'; // Frontend domain
 app.use(cors({
-  origin: allowedOrigins
+  origin: allowedOrigins, // Allow only your frontend domain
+  methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+  credentials: true, // If you're using cookies, enable this
 }));
 
 // Initialize Redis connection and Bull queues
@@ -22,7 +27,6 @@ const queueGeneratePlan = new Queue('generatePlan', {
   port: 12299,
   password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
 });
-
 
 console.log('Initializing workers...');
 
@@ -75,7 +79,7 @@ async function monitorQueue() {
 // Monitor the queues every 5 seconds
 setInterval(monitorQueue, 5000);
 
-// Handle error events
+// Handle uncaught exceptions and unhandled promise rejections
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });
@@ -88,6 +92,11 @@ console.log('Worker initialization complete');
 
 // Main function to handle routes and API requests
 module.exports = async (req, res) => {
+
+  // Handle preflight OPTIONS requests (CORS preflight)
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
   if (req.method === 'POST' && req.url.includes('submit-questionnaire')) {
     try {
