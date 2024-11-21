@@ -8,10 +8,18 @@ const { savePlan } = require('../routes/controllers/savePlan');
 const { getJobStatus } = require('../routes/controllers/jobStatusController');
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
+import { createClient } from 'redis';
 
 const express = require('express');
 const app = express();
 
+const client = createClient({
+    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+    socket: {
+        host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+        port: 10776
+    }
+});
 // CORS configuration
 const allowedOrigins = 'https://www.sweatandsnack.vercel.app'; // Frontend domain
 app.use(cors({
@@ -25,20 +33,9 @@ app.use(express.json());
 
 // Initialize Redis connection and Bull queues
 const jobQueue = new Queue('generatePlan', {
-  redis:{
-    // port: 10776,
-    // host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-    // password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-    port: process.env.REDIS_PORT,
-    host: process.env.REDIS_HOST,
-    password: process.env.REDIS_PASSWORD,
-    tls: {
-        rejectUnauthorized: false, // Add this line to handle self-signed certificates
-        servername: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com'
-      },
-    connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
-  }
-  });
+  connection: client,  // Use the Redis client instance directly
+});
+
 console.log(jobQueue);
 
 console.log('Initializing workers...');
