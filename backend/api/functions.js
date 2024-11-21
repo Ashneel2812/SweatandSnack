@@ -36,7 +36,6 @@ const jobQueue = new Queue('generatePlan', {
   connection: client,  // Use the Redis client instance directly
 });
 
-console.log(jobQueue);
 
 console.log('Initializing workers...');
 

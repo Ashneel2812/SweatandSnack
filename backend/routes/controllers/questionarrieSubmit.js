@@ -160,7 +160,7 @@ const submitQuestionnaire = async (req, res) => {
   try {
     const formData = req.body;
     const jobId = uuidv4(); // Generate a unique job ID
-
+    console.log("In try block")
     // Add the job to the queue for background processing (AI response generation)
     await jobQueue.add('generatePlan', { jobId, formData });
     // Respond immediately to the client with the job ID
