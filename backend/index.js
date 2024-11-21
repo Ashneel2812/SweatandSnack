@@ -13,6 +13,7 @@ const regenerateRoutes = require('./routes/regenerateRoutes');
 const planRoutes = require('./routes/planRoutes');
 const googleSheetRoutes = require('./routes/googleSheetRoutes');
 const jobStatusRoutes= require('./routes/jobStatusRoutes')
+import { createClient } from 'redis';
 
 const app = express();
 const PORT = 5000;
@@ -24,6 +25,15 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Allow specific headers
   credentials: true, // If you're using cookies, enable this
 }));
+
+const client = createClient({
+  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+  socket: {
+      host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+      port: 10776
+  }
+});
+
 app.use(express.json());
 
 
@@ -31,17 +41,8 @@ const uri = 'mongodb+srv://dbUser:dbUserPassword@sweatandsnack.5nd6x.mongodb.net
 
 // BullMQ Queue
 const jobQueue = new Queue('generatePlan', {
-  redis:{
-    port: 10776,
-    host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-    tls: {
-        rejectUnauthorized: false, // Add this line to handle self-signed certificates
-        servername: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com'
-      },
-    connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
-  }
-  });
+  connection: client,  // Use the Redis client instance directly
+});
 console.log(jobQueue);
 console.log(process.env.REDIS_PASSWORD);
 

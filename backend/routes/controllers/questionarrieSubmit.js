@@ -1,26 +1,24 @@
 const { OpenAI } = require('openai');
 const Queue = require('bull');
 const { v4: uuidv4 } = require('uuid'); // For generating unique job ID
+import { createClient } from 'redis';
 
 // Initialize OpenAI client with your API key
 const openai = new OpenAI({
   apiKey: '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', // Replace with your actual OpenAI API key
 });
 
-
+const client = createClient({
+  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+  socket: {
+      host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+      port: 10776
+  }
+});
 // Initialize Bull Queue
 const jobQueue = new Queue('generatePlan', {
-  redis:{
-    port: 10776,
-    host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-    tls: {
-        rejectUnauthorized: false, // Add this line to handle self-signed certificates
-        servername: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com'
-      },
-    connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
-  }
-  });
+  connection: client,  // Use the Redis client instance directly
+});
 
 // Listen to job events
 
