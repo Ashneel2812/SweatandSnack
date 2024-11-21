@@ -2,12 +2,12 @@
 const express = require('express');
 const cors = require('cors');
 const { Queue } = require('bullmq');  // Import from bullmq
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullmqAdapter');  // Use BullMQAdapter
-const { ExpressAdapter } = require('@bull-board/express');
-const { Worker } = require('bullmq');
-const { v4: uuidv4 } = require('uuid');
-const mongoose = require('mongoose');
+// const { createBullBoard } = require('@bull-board/api');
+// const { BullMQAdapter } = require('@bull-board/api/bullmqAdapter');  // Use BullMQAdapter
+// const { ExpressAdapter } = require('@bull-board/express');
+// const { Worker } = require('bullmq');
+// const { v4: uuidv4 } = require('uuid');
+// const mongoose = require('mongoose');
 const questionnaireRoutes = require('./routes/questionarrieRoutes');
 const regenerateRoutes = require('./routes/regenerateRoutes');
 const planRoutes = require('./routes/planRoutes');
@@ -41,15 +41,15 @@ jobQueue.on('error', (err) => {
 console.log('Queue "generatePlan" created and connected to Redis');
 
 // Create Bull Board
-const serverAdapter = new ExpressAdapter();
-serverAdapter.setBasePath('/admin/queues');
-createBullBoard({
-  queues: [new BullMQAdapter(jobQueue)],  // Use BullMQAdapter
-  serverAdapter,
-});
+  // const serverAdapter = new ExpressAdapter();
+  // serverAdapter.setBasePath('/admin/queues');
+  // createBullBoard({
+  //   queues: [new BullMQAdapter(jobQueue)],  // Use BullMQAdapter
+  //   serverAdapter,
+  // });
 
-app.use('/admin/queues', serverAdapter.getRouter());
-console.log('Bull Board is set up at /admin/queues');
+  // app.use('/admin/queues', serverAdapter.getRouter());
+  // console.log('Bull Board is set up at /admin/queues');
 
 app.use('/api', questionnaireRoutes);
 app.use('/api', regenerateRoutes);
