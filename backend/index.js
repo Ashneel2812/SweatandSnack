@@ -16,6 +16,8 @@ const jobStatusRoutes= require('./routes/jobStatusRoutes')
 
 const app = express();
 const PORT = 5000;
+const allowedOrigins = 'https://www.sweatandsnack.vercel.app'; // Frontend domain
+
 app.use(cors({
   origin: allowedOrigins, // Allow only your frontend domain
   methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
