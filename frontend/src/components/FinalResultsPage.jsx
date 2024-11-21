@@ -96,7 +96,7 @@ export default function FinalResultsPage() {
           dietPlan: finalPlan.diet_plan,
           workoutPlan: finalPlan.workout_plan,
           dietMacros: finalPlan.diet_macros // Ensure dietMacros is included
-        });
+        },{withCredentials: true});
         console.log('Plan saved:', response.data);
         alert('Your plan has been saved and will be emailed to you shortly!');
       } else if (emailAction === 'generate-google-sheet') {
@@ -105,7 +105,7 @@ export default function FinalResultsPage() {
           email,
           workoutPlan: finalPlan.workout_plan,
            // Send the email input
-        });
+        },{withCredentials: true});
         console.log('Google Sheet generated:', response.data);
         alert('Google Sheet generated successfully and sent to your email!');
       }

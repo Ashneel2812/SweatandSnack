@@ -59,8 +59,8 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
     onLoadingStart();
 
     try {
-      // const response = await axios.post('http://localhost:5000/api/submit-questionnaire', formData);
-      const response = await axios.post('https://sweatand-snack.vercel.app/api/submit-questionnaire', formData);
+      // const response = await axios.post('http://localhost:5000/api/submit-questionnaire', formData,{withCredentials: true});
+      const response = await axios.post('https://sweatand-snack.vercel.app/api/submit-questionnaire', formData,{withCredentials: true});
       console.log('Response from submit-questionnaire:', response.data);
       
       // Navigate to LoadingPage and pass the response data

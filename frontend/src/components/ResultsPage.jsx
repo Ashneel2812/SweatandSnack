@@ -154,7 +154,7 @@ export default function ResultsPage() {
         formData,
         feedback,
         aiGeneratedPlan: previousPlan
-      });
+      },{withCredentials: true});
 
       // if (response.data && response.data.aiGeneratedPlan) {
       //   let newPlan = response.data.aiGeneratedPlan;
