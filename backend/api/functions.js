@@ -13,7 +13,7 @@ const express = require('express');
 const app = express();
 
 // CORS configuration
-const allowedOrigins = 'https://sweatandsnack.vercel.app'; // Frontend domain
+const allowedOrigins = 'https://www.sweatandsnack.vercel.app'; // Frontend domain
 app.use(cors({
   origin: allowedOrigins, // Allow only your frontend domain
   methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
@@ -23,9 +23,9 @@ app.use(cors({
 
 // Initialize Redis connection and Bull queues
 const queueGeneratePlan = new Queue('generatePlan', {
-  host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
-  port: 12299,
-  password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: 10776,
+  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
   settings: {
     connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
   }

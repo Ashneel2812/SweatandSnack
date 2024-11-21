@@ -8,9 +8,9 @@ const path = require('path');
 // Define Redis queues for saving plans and sending emails with unique names
 const savePlanQueue = new Bull('save-plan', {
   redis: {
-    host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
-    port: 12299,
-    password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+    host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+    port: 10776,
+    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
     settings: {
       connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
     }// 5 seconds backoff between retries
@@ -19,9 +19,9 @@ const savePlanQueue = new Bull('save-plan', {
 
 const sendEmailQueue = new Bull('send-email-save-plan', {  // Changed queue name
   redis: {
-    host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
-    port: 12299,
-    password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+    host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+    port: 10776,
+    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
     settings: {
       connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
     } // Number of retry attempts for sending email

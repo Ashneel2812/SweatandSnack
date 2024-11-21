@@ -5,9 +5,9 @@ const nodemailer = require('nodemailer');
 // Create a new BullMQ queue (with Redis config)
 const emailQueue = new Queue('emailQueue', {
   redis: {
-    host: 'redis-12299.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
-    port: 12299,
-    password: 'zzf1j363kjzlys8XAaCB1CljmOwS2Iwt',
+    host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+    port: 10776,
+    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
     settings: {
       connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
     }
