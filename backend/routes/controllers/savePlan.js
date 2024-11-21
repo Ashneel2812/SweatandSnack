@@ -12,7 +12,7 @@ const savePlanQueue = new Bull('save-plan', {
     port: 10776,
     password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
     settings: {
-      connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+      connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
     }// 5 seconds backoff between retries
   },
 });
@@ -23,7 +23,7 @@ const sendEmailQueue = new Bull('send-email-save-plan', {  // Changed queue name
     port: 10776,
     password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
     settings: {
-      connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+      connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
     } // Number of retry attempts for sending email
   },
 });

@@ -12,7 +12,7 @@ const queueRegeneratePlan = new Queue('regeneratePlan', {
   port: 10776,
   password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
   settings: {
-    connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+    connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
   }
 });
 
@@ -21,7 +21,7 @@ const jobQueue = new Queue('generatePlan', {
   port: 10776,
   password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
   settings: {
-    connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+    connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
   }
 });
 
