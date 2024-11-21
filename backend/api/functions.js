@@ -20,6 +20,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
   credentials: true, // If you're using cookies, enable this
 }));
+app.use(express.json());
+
 
 // Initialize Redis connection and Bull queues
 const queueGeneratePlan = new Queue('generatePlan', {

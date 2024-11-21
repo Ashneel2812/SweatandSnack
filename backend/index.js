@@ -16,8 +16,12 @@ const jobStatusRoutes= require('./routes/jobStatusRoutes')
 
 const app = express();
 const PORT = 5000;
-
-app.use(cors());
+app.use(cors({
+  origin: '*', // Allow only your frontend domain
+  methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Allow specific headers
+  credentials: true, // If you're using cookies, enable this
+}));
 app.use(express.json());
 
 
@@ -28,6 +32,9 @@ const jobQueue = new Queue('generatePlan', {
   host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
   port: 10776,
   password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+  settings: {
+    connectTimeout: 10000, // Set timeout to 10 seconds (default is 1000ms)
+  }
 });
 
 
