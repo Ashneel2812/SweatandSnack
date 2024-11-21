@@ -5,7 +5,7 @@ const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
 
 // Initialize queues for both jobs
-const queueGeneratePlan = new Queue('generatePlan', {
+const jobQueue = new Queue('generatePlan', {
   host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
   port: 10776,
   password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
@@ -23,7 +23,7 @@ const openai = new OpenAI({
 console.log('Initializing workers...');
 
 // Worker 1: Process `generatePlan` jobs
-queueGeneratePlan.process('generatePlan', async (job) => {
+jobQueue.process('generatePlan', async (job) => {
   console.log(`Processing job: ${job.id}, Type: ${job.name}`);
   
   try {
@@ -56,9 +56,9 @@ queueGeneratePlan.process('generatePlan', async (job) => {
 // Monitor the queue status for both queues
 async function monitorQueue() {
   try {
-    const waitingJobsGeneratePlan = await queueGeneratePlan.getWaiting();
-    const activeJobsGeneratePlan = await queueGeneratePlan.getActive();
-    const completedJobsGeneratePlan = await queueGeneratePlan.getCompleted();
+    const waitingJobsGeneratePlan = await jobQueue.getWaiting();
+    const activeJobsGeneratePlan = await jobQueue.getActive();
+    const completedJobsGeneratePlan = await jobQueue.getCompleted();
 
     
     console.log('\nQueue Monitor Status:');
