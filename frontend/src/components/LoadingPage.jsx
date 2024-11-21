@@ -42,7 +42,7 @@ const LoadingPage = () => {
     // First API call after 5 seconds
     const firstCallTimeout = setTimeout(() => {
       checkJobStatus();  // First API call after 5 seconds
-    }, 5000);
+    }, 3000);
 
     // Start polling every 10 seconds after the first call
     const intervalId = setInterval(() => {

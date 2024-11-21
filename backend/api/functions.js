@@ -65,24 +65,22 @@ queueGeneratePlan.process('generatePlan', async (job) => {
 });
 
 // Monitor the queue status for both queues
-async function monitorQueue() {
-  try {
-    const waitingJobsGeneratePlan = await queueGeneratePlan.getWaiting();
-    const activeJobsGeneratePlan = await queueGeneratePlan.getActive();
-    const completedJobsGeneratePlan = await queueGeneratePlan.getCompleted();
+// async function monitorQueue() {
+//   try {
+//     const waitingJobsGeneratePlan = await queueGeneratePlan.getWaiting();
+//     const activeJobsGeneratePlan = await queueGeneratePlan.getActive();
+//     const completedJobsGeneratePlan = await queueGeneratePlan.getCompleted();
 
-    console.log('\nQueue Monitor Status:');
-    console.log('--- generatePlan Queue ---');
-    console.log('Waiting Jobs:', waitingJobsGeneratePlan.length);
-    console.log('Active Jobs:', activeJobsGeneratePlan.length);
-    console.log('Completed Jobs:', completedJobsGeneratePlan.length);
-  } catch (error) {
-    console.error('Error monitoring queues:', error);
-  }
-}
-
-// Monitor the queues every 5 seconds
-setInterval(monitorQueue, 5000);
+//     console.log('\nQueue Monitor Status:');
+//     console.log('--- generatePlan Queue ---');
+//     console.log('Waiting Jobs:', waitingJobsGeneratePlan.length);
+//     console.log('Active Jobs:', activeJobsGeneratePlan.length);
+//     console.log('Completed Jobs:', completedJobsGeneratePlan.length);
+//   } catch (error) {
+//     console.error('Error monitoring queues:', error);
+//   }
+// }
+// setInterval(monitorQueue, 5000);
 
 // Handle uncaught exceptions and unhandled promise rejections
 process.on('uncaughtException', (err) => {

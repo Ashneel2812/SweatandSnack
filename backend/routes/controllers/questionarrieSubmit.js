@@ -154,6 +154,7 @@ const generatePlans = async (formData) => {
 
 // Function to handle submitting the questionnaire and adding a job to the queue
 const submitQuestionnaire = async (req, res) => {
+  console.log("Inside submit questionnarie api")
   try {
     const formData = req.body;
     const jobId = uuidv4(); // Generate a unique job ID
