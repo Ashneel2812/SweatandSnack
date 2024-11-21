@@ -8,10 +8,6 @@
     {
       "src": "api/functions.js",
       "use": "@vercel/node",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
-      },
       "config": {
         "maxDuration": 900
       }
@@ -26,11 +22,7 @@
     },
     {
       "src": "routes/questionarrieRoutes.js",
-      "use": "@vercel/node",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
-      }
+      "use": "@vercel/node"
     },
     {
       "src": "routes/regenerateRoutes.js",
@@ -38,11 +30,7 @@
     },
     {
       "src": "routes/jobStatusController.js",
-      "use": "@vercel/node",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -56,19 +44,35 @@
     },
     {
       "src": "/routes/googleSheetRoutes",
-      "dest": "/routes/googleSheetRoutes.js"
+      "dest": "/routes/googleSheetRoutes.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     },
     {
       "src": "/routes/planRoutes",
-      "dest": "/routes/planRoutes.js"
+      "dest": "/routes/planRoutes.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     },
     {
       "src": "/routes/questionarrieRoutes",
-      "dest": "/routes/questionarrieRoutes.js"
+      "dest": "/routes/questionarrieRoutes.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     },
     {
       "src": "/routes/regenerateRoutes",
-      "dest": "/routes/regenerateRoutes.js"
+      "dest": "/routes/regenerateRoutes.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     },
     {
       "src": "/routes/jobStatusController",
