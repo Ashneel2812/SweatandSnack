@@ -31,9 +31,13 @@ const uri = 'mongodb+srv://dbUser:dbUserPassword@sweatandsnack.5nd6x.mongodb.net
 
 // BullMQ Queue
 const jobQueue = new Queue('generatePlan', {
-  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
   port: 10776,
+  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
   password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+  tls: {
+      rejectUnauthorized: false, // Add this line to handle self-signed certificates
+      servername: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com'
+    },
   settings: {
     connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
   }
