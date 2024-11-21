@@ -7,15 +7,28 @@ const openai = new OpenAI({
   apiKey: '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', // Replace with your actual OpenAI API key
 });
 
+// Redis configuration
+const REDIS_CONFIG = {
+  redis: {
+    port: 10776,
+    host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+    tls: {}, // Enable TLS/SSL
+    connectTimeout: 4000,
+    maxRetriesPerRequest: 3
+  }
+};
 
 // Initialize Bull Queue
-const jobQueue = new Queue('generatePlan', {
-  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-  port: 10776,
-  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-  settings: {
-    connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
-  }
+const jobQueue = new Queue('generatePlan', REDIS_CONFIG);
+
+// Add error handling
+jobQueue.on('error', (error) => {
+  console.error('Queue error:', error);
+});
+
+jobQueue.on('failed', (job, err) => {
+  console.error('Job failed:', job.id, err);
 });
 
 // Listen to job events
@@ -154,20 +167,22 @@ const generatePlans = async (formData) => {
 
 // Function to handle submitting the questionnaire and adding a job to the queue
 const submitQuestionnaire = async (req, res) => {
-  console.log("Inside submit questionnarie api")
   try {
     const formData = req.body;
-    const jobId = uuidv4(); // Generate a unique job ID
+    const jobId = uuidv4();
 
-    // Add the job to the queue for background processing (AI response generation)
-    await jobQueue.add('generatePlan', { jobId, formData });
-    // Respond immediately to the client with the job ID
-    console.log(`Job ${jobId} added to queue.`);
-
-    return res.status(200).json({ jobId });
+    // Add job to queue with proper error handling
+    try {
+      const job = await jobQueue.add('generatePlan', { jobId, formData });
+      console.log('Job added to queue:', job.id);
+      return res.status(200).json({ jobId });
+    } catch (queueError) {
+      console.error('Error adding job to queue:', queueError);
+      throw queueError;
+    }
   } catch (error) {
-    console.error('Error submitting questionnaire:', error);
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    console.error('Error in submitQuestionnaire:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };
 
