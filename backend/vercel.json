@@ -8,6 +8,10 @@
     {
       "src": "api/functions.js",
       "use": "@vercel/node",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      },
       "config": {
         "maxDuration": 900
       }
@@ -22,17 +26,33 @@
     },
     {
       "src": "routes/questionarrieRoutes.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     },
     {
       "src": "routes/regenerateRoutes.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "routes/jobStatusController.js",
+      "use": "@vercel/node",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     }
   ],
   "routes": [
     {
       "src": "/api/.*",
-      "dest": "/api/functions.js"
+      "dest": "/api/functions.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     },
     {
       "src": "/routes/googleSheetRoutes",
@@ -49,6 +69,14 @@
     {
       "src": "/routes/regenerateRoutes",
       "dest": "/routes/regenerateRoutes.js"
+    },
+    {
+      "src": "/routes/jobStatusController",
+      "dest": "/routes/jobStatusController.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     }
   ]
 }
