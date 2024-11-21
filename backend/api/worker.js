@@ -7,9 +7,10 @@ const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan');
 // Initialize queues for both jobs
 const jobQueue = new Queue('generatePlan', {
   redis:{
-    port: 10776,
-    host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+    url: process.env.REDIS_URL,
+    // port: 10776,
+    // host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+    // password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
     tls: {
         rejectUnauthorized: false, // Add this line to handle self-signed certificates
         servername: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com'
