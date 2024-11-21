@@ -162,7 +162,9 @@ const submitQuestionnaire = async (req, res) => {
     const jobId = uuidv4(); // Generate a unique job ID
     console.log("In try block")
     // Add the job to the queue for background processing (AI response generation)
-    await jobQueue.add('generatePlan', { jobId, formData });
+    jobQueue.add('generatePlan', { jobId, formData }).catch((error) => {
+      console.error('Error adding job to queue:', error);
+    });
     // Respond immediately to the client with the job ID
     console.log(`Job ${jobId} added to queue.`);
 
