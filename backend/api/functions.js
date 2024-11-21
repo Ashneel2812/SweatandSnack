@@ -26,10 +26,12 @@ app.use(express.json());
 // Initialize Redis connection and Bull queues
 const jobQueue = new Queue('generatePlan', {
   redis:{
-    url: process.env.REDIS_URL,
     // port: 10776,
     // host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
     // password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+    port: process.env.REDIS_PORT,
+    host: process.env.REDIS_HOST,
+    password: process.env.REDIS_PASSWORD,
     tls: {
         rejectUnauthorized: false, // Add this line to handle self-signed certificates
         servername: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com'
