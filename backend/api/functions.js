@@ -33,9 +33,7 @@ const jobQueue = new Queue('generatePlan', {
         rejectUnauthorized: false, // Add this line to handle self-signed certificates
         servername: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com'
       },
-    settings: {
-      connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
-    }
+    connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
   }
   });
 
