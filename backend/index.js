@@ -42,7 +42,7 @@ const jobQueue = new Queue('generatePlan', {
     connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
   }
   });
-
+console.log(jobQueue);
 
 jobQueue.on('ready', () => {
   console.log('Queue is connected and ready to use');
