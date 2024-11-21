@@ -17,7 +17,7 @@ const jobStatusRoutes= require('./routes/jobStatusRoutes')
 const app = express();
 const PORT = 5000;
 app.use(cors({
-  origin: '*', // Allow only your frontend domain
+  origin: allowedOrigins, // Allow only your frontend domain
   methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Allow specific headers
   credentials: true, // If you're using cookies, enable this

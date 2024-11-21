@@ -15,7 +15,7 @@ const app = express();
 // CORS configuration
 const allowedOrigins = 'https://www.sweatandsnack.vercel.app'; // Frontend domain
 app.use(cors({
-  origin: '*', // Allow only your frontend domain
+  origin: allowedOrigins, // Allow only your frontend domain
   methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
   credentials: true, // If you're using cookies, enable this
