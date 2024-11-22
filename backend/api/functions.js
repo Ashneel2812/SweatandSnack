@@ -9,6 +9,7 @@ const { getJobStatus } = require('../routes/controllers/jobStatusController');
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
 const redis = require('redis');
+const jobStatusRoutes= require('../routes/jobStatusRoutes');
 
 const express = require('express');
 const app = express();
