@@ -14,7 +14,7 @@ const jobQueue = new Queue('generatePlan', client);
 const getJobStatus = async (req, res) => {
   try {
     console.log('req.params:', req);
-    const { jobId } = req.params || req.url.split('/').pop();
+    const jobId = req.url.split('/').pop();
     console.log(`Received request for job status with jobId: ${jobId}`);
 
     // Retrieve all waiting, active, and completed jobs from the queue
