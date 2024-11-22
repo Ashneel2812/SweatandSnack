@@ -13,7 +13,7 @@ const jobQueue = new Queue('generatePlan', client);
 // Function to handle job status request
 const getJobStatus = async (req, res) => {
   try {
-    console.log('req.params:', req.params);
+    console.log('req.params:', req);
     const { jobId } = req.params;
     console.log(`Received request for job status with jobId: ${jobId}`);
 

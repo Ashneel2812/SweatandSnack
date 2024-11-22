@@ -145,6 +145,7 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET' && req.url.includes('job-status')) {
     try {
+      console.log("Inside Job - status in func ",req);
       await getJobStatus(req, res); // Call the job status controller
     } catch (error) {
       res.status(500).json({ error: 'Error fetching job status.', details: error.message });
