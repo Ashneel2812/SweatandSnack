@@ -1,15 +1,14 @@
 const Queue = require('bull');
-const { createClient } = require('redis');
-const client = createClient({
-  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-  socket: {
-      host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-      port: 10776
-  }
-});
-const jobQueue = new Queue('generatePlan', {
-  connection: client,  // Use the Redis client instance directly
-});
+const redis = require('redis');
+const client ={
+  redis:{
+  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: 10776,
+  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja'
+},
+};
+const jobQueue = new Queue('generatePlan', client);
+
 
 // Function to handle job status request
 const getJobStatus = async (req, res) => {

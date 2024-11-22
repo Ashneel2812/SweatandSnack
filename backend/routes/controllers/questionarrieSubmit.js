@@ -1,22 +1,22 @@
 const { OpenAI } = require('openai');
 const Queue = require('bull');
 const { v4: uuidv4 } = require('uuid'); // For generating unique job ID
-const { createClient } = require('redis');
+const redis = require('redis');
 
 // Initialize OpenAI client with your API key
 const openai = new OpenAI({
   apiKey: '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', // Replace with your actual OpenAI API key
 });
 
-const client = createClient({
-  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-  socket: {
-      host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-      port: 10776
-  }
-});
+const client ={
+  redis:{
+  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: 10776,
+  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja'
+},
+};
 // Initialize Bull Queue
-const jobQueue = new Queue('generatePlan', {client});
+const jobQueue = new Queue('generatePlan', client);
 
 // Listen to job events
 
@@ -160,9 +160,10 @@ const submitQuestionnaire = async (req, res) => {
     const jobId = uuidv4(); // Generate a unique job ID
     console.log("In try block")
     // Add the job to the queue for background processing (AI response generation)
-    jobQueue.add('generatePlan', { jobId, formData }).catch((error) => {
+    const job = jobQueue.add('generatePlan', { jobId, formData }).catch((error) => {
       console.error('Error adding job to queue:', error);
     });
+    console.log("Job details:", job);
     // Respond immediately to the client with the job ID
     console.log(`Job ${jobId} added to queue.`);
 
@@ -173,6 +174,7 @@ const submitQuestionnaire = async (req, res) => {
   }
 };
 
+console.log("Finished submitQuestionnarie");
 // Export functions for API routes
 module.exports = {
   submitQuestionnaire,

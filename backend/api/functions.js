@@ -8,18 +8,18 @@ const { savePlan } = require('../routes/controllers/savePlan');
 const { getJobStatus } = require('../routes/controllers/jobStatusController');
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
-const { createClient } = require('redis');
+const redis = require('redis');
 
 const express = require('express');
 const app = express();
 
-const client = createClient({
-    password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-    socket: {
-        host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-        port: 10776
-    }
-});
+const client ={
+  redis:{
+  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: 10776,
+  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja'
+},
+};
 // CORS configuration
 const allowedOrigins = 'https://www.sweatandsnack.vercel.app'; // Frontend domain
 app.use(cors({
@@ -32,9 +32,7 @@ app.use(express.json());
 
 
 // Initialize Redis connection and Bull queues
-const jobQueue = new Queue('generatePlan', {
-  connection: client,  // Use the Redis client instance directly
-});
+const jobQueue = new Queue('generatePlan', client);
 
 
 console.log('Initializing workers...');
@@ -59,7 +57,7 @@ jobQueue.process('generatePlan', async (job) => {
       console.log(`No feedback found. Generating new plan for job: ${job.id}`);
       result = await generatePlans(formData);
     }
-
+    console.log(jobQueue);
     console.log(`Job ${job.id} completed successfully.`);
     return { status: 'success', plan: result };
   } catch (error) {
@@ -69,22 +67,22 @@ jobQueue.process('generatePlan', async (job) => {
 });
 
 // Monitor the queue status for both queues
-// async function monitorQueue() {
-//   try {
-//     const waitingJobsGeneratePlan = await jobQueue.getWaiting();
-//     const activeJobsGeneratePlan = await jobQueue.getActive();
-//     const completedJobsGeneratePlan = await jobQueue.getCompleted();
+async function monitorQueue() {
+  try {
+    const waitingJobsGeneratePlan = await jobQueue.getWaiting();
+    const activeJobsGeneratePlan = await jobQueue.getActive();
+    const completedJobsGeneratePlan = await jobQueue.getCompleted();
 
-//     console.log('\nQueue Monitor Status:');
-//     console.log('--- generatePlan Queue ---');
-//     console.log('Waiting Jobs:', waitingJobsGeneratePlan.length);
-//     console.log('Active Jobs:', activeJobsGeneratePlan.length);
-//     console.log('Completed Jobs:', completedJobsGeneratePlan.length);
-//   } catch (error) {
-//     console.error('Error monitoring queues:', error);
-//   }
-// }
-// setInterval(monitorQueue, 5000);
+    console.log('\nQueue Monitor Status:');
+    console.log('--- generatePlan Queue ---');
+    console.log('Waiting Jobs:', waitingJobsGeneratePlan.length);
+    console.log('Active Jobs:', activeJobsGeneratePlan.length);
+    console.log('Completed Jobs:', completedJobsGeneratePlan.length);
+  } catch (error) {
+    console.error('Error monitoring queues:', error);
+  }
+}
+setInterval(monitorQueue, 5000);
 
 // Handle uncaught exceptions and unhandled promise rejections
 process.on('uncaughtException', (err) => {

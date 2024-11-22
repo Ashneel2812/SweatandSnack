@@ -7,26 +7,18 @@ const openai = new OpenAI({
   apiKey: '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'
 });
 
-const client = createClient({
-  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-  socket: {
-      host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-      port: 10776
-  }
-});
-// Initialize Bull Queue for Regenerate Plan
-const queueRegeneratePlan = new Queue('regeneratePlan', {
+const client ={
+  redis:{
   host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
   port: 10776,
-  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
-  settings: {
-    connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
-  }
-});
+  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja'
+},
+};
 
-const jobQueue = new Queue('generatePlan', {
-  connection: client,  // Use the Redis client instance directly
-});
+
+
+const jobQueue = new Queue('generatePlan', client);
+
 
 const regeneratePlanLogic = async (formData, feedback, aiGeneratedPlan) => {
 
