@@ -8,7 +8,7 @@ const { savePlan } = require('../routes/controllers/savePlan');
 const { getJobStatus } = require('../routes/controllers/jobStatusController');
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 
 const express = require('express');
 const app = express();

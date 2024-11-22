@@ -13,7 +13,7 @@ const regenerateRoutes = require('./routes/regenerateRoutes');
 const planRoutes = require('./routes/planRoutes');
 const googleSheetRoutes = require('./routes/googleSheetRoutes');
 const jobStatusRoutes= require('./routes/jobStatusRoutes')
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 
 const app = express();
 const PORT = 5000;
@@ -25,6 +25,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Allow specific headers
   credentials: true, // If you're using cookies, enable this
 }));
+// app.use(cors());
 
 const client = createClient({
   password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
@@ -40,9 +41,7 @@ app.use(express.json());
 const uri = 'mongodb+srv://dbUser:dbUserPassword@sweatandsnack.5nd6x.mongodb.net/SweatandSnack?retryWrites=true&w=majority&appName=SweatandSnack';
 
 // BullMQ Queue
-const jobQueue = new Queue('generatePlan', {
-  connection: client,  // Use the Redis client instance directly
-});
+const jobQueue = new Queue('generatePlan', {client});
 console.log(jobQueue);
 console.log(process.env.REDIS_PASSWORD);
 

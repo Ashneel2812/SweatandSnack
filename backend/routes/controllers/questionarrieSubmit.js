@@ -1,7 +1,7 @@
 const { OpenAI } = require('openai');
 const Queue = require('bull');
 const { v4: uuidv4 } = require('uuid'); // For generating unique job ID
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 
 // Initialize OpenAI client with your API key
 const openai = new OpenAI({
@@ -16,9 +16,7 @@ const client = createClient({
   }
 });
 // Initialize Bull Queue
-const jobQueue = new Queue('generatePlan', {
-  connection: client,  // Use the Redis client instance directly
-});
+const jobQueue = new Queue('generatePlan', {client});
 
 // Listen to job events
 

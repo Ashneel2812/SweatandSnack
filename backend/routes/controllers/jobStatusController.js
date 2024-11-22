@@ -1,5 +1,5 @@
 const Queue = require('bull');
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 const client = createClient({
   password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
   socket: {

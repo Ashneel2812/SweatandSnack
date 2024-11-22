@@ -3,7 +3,7 @@ const Queue = require('bull');
 const { OpenAI } = require('openai');
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 
 const client = createClient({
   password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',

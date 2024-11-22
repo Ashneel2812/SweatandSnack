@@ -1,7 +1,7 @@
 const { OpenAI } = require('openai');
 const Queue = require('bull');
 const { v4: uuidv4 } = require('uuid'); // For generating unique job ID
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 
 const openai = new OpenAI({
   apiKey: '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'
