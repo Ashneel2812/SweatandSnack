@@ -93,7 +93,6 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 console.log('Worker initialization complete');
-app.use('/api', jobStatusRoutes); 
 
 // Main function to handle routes and API requests
 module.exports = async (req, res) => {
