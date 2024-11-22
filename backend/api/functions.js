@@ -9,7 +9,6 @@ const { getJobStatus } = require('../routes/controllers/jobStatusController');
 const { generatePlans } = require('../routes/controllers/questionarrieSubmit');
 const { regeneratePlanLogic } = require('../routes/controllers/regeneratePlan'); // Import regeneratePlans function from regeneratePlan.js
 const redis = require('redis');
-const jobStatusRouter = require('../routes/jobStatusRouter');
 const express = require('express');
 const app = express();
 
@@ -144,16 +143,15 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // if (req.method === 'GET' && req.url.includes('job-status')) {
-  //   // try {
-  //   //   console.log("Inside Job - status in func ",req);
-  //   //   await getJobStatus(req, res); // Call the job status controller
-  //   // } catch (error) {
-  //   //   res.status(500).json({ error: 'Error fetching job status.', details: error.message });
-  //   // }
-  //   app.use('/api', jobStatusRoutes); 
-  // //   return;
-  // }
+  if (req.method === 'GET' && req.url.includes('job-status')) {
+    try {
+      console.log("Inside Job - status in func ",req);
+      await getJobStatus(req, res); // Call the job status controller
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching job status.', details: error.message });
+    }
+    return;
+  }
 
   res.status(405).json({ error: 'Method Not Allowed' });
 };
