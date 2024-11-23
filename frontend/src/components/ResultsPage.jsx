@@ -106,6 +106,7 @@ export default function ResultsPage() {
       } else {
         planData = getFromSession('aiGeneratedPlan');
       }
+      console.log(planData);
       if (planData) {
         try {
           let parsedPlan;
@@ -118,7 +119,6 @@ export default function ResultsPage() {
                 return { ...acc, ...JSON.parse(cleanJson) };
               }, {});
             } else {
-              console.log("plandata",planData)
               parsedPlan = JSON.parse(planData);
             }
           } else {
