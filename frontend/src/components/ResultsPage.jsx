@@ -106,7 +106,6 @@ export default function ResultsPage() {
       } else {
         planData = getFromSession('aiGeneratedPlan');
       }
-      console.log(planData);
       if (planData) {
         try {
           let parsedPlan;

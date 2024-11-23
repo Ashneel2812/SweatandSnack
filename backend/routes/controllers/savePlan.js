@@ -155,6 +155,7 @@ savePlanQueue.process('save-plan', async (job) => {
 
     // Closing remarks
     emailBody += `<p>Have a look at the tempo, sets, and reps in order to achieve more from the workout plan.</p>`;
+    emailBody += `<p>We suggest you to use these recipes inorder to make a perfect diet plan.</p>`;
     emailBody += `<p>In case of any queries, send an email to: sweatandsnack2024@gmail.com</p>`;
     emailBody += `<p>Thank you for using our service!</p>`;
 

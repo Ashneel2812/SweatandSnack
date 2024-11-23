@@ -23,7 +23,6 @@ export default function LandingPage() {
     e.preventDefault();
     emailjs.send('service_rj8kpyo', 'template_tpto39p', formData, 'nCux8mV2_UFJV6LUq')
       .then((response) => {
-        console.log('SUCCESS!', response.status, response.text);
         alert('Query sent!'); // Show alert after successful email sending
         // Optionally reset the form
         setFormData({ name: '', email: '', message: '' });
