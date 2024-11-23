@@ -1,6 +1,6 @@
 const { OpenAI } = require('openai');
 const Queue = require('bull');
-const { v4: uuidv4 } = require('uuid'); // For generating unique job ID
+const { v4: uuidv4 } = require('uuid'); 
 const { createClient } = require('redis');
 
 const openai = new OpenAI({
