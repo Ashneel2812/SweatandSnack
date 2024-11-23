@@ -55,7 +55,7 @@ const generatePlans = async (formData) => {
           "exercise": "Exercise Name",
           "sets": 0,
           "reps": 0,
-          "tempo": "Tempo (e.g., 3 seconds down, 1 second up)"
+          "tempo": "3 seconds down, 1 second up"
         },
         ...
       ]
@@ -121,18 +121,20 @@ const generatePlans = async (formData) => {
     **Diet Plan**:
     Based on the calories and macros calculated, provide a 7-day **meal plan** in the following JSON format:
     
-    ${dietPlanPrompt} . Give this JSON for 7 days and different recipes every day and ensure the exact calories needed.
+    First Json named "diet_plan" ${dietPlanPrompt} . Give this JSON for 7 days and different recipes every day and ensure the exact calories needed and the total calories of a day add up to the exact calories required and also give the recipe in detail with the measurements.
 
     **Workout Plan**:
     Based on the TDEE and workout goals, provide a **7-day workout routine** in the following JSON format:
     
-    ${workoutPlanPrompt} . Give this JSON for 7 days.
+    Second json named "workout_plan" ${workoutPlanPrompt} . Give this JSON for 7 days.
+
+    **Give the best workout plan suitable for the user and take into consideration the best exercises for their goals and also give the proper tempo for that exercise which is the most optimal.**
 
     **Diet-Macros Breakdown**:
     Provide a **third JSON** to break down the **total calories** and **macronutrients** required:
     
     "diet_macros": {
-        "total_calories_needed": x, 
+        "total_calories_needed": "xg", 
         "macronutrients": {
             "protein": "yg",
             "carbohydrates": "zg",

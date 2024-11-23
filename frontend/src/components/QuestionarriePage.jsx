@@ -116,11 +116,10 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
           <div className="flex flex-col items-center justify-center h-full bg-black bg-opacity-50"> {/* Optional overlay for better text visibility */}
             <h2 className="text-2xl font-bold text-white mb-4">Questionnaire</h2>
             <form id="questionnaire-form" onSubmit={handleSubmit} className="space-y-4 max-h-[60vh] overflow-y-auto pr-4 bg-white bg-opacity-90 p-8 rounded shadow-lg w-[50%]">
-              <h3 className="text-xl font-semibold">Diet-Related</h3>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Common Dietary Allergies:</label>
-                {['peanuts', 'gluten', 'milk', 'shellfish', 'soy_products'].map((allergy) => (
+                <label className="block text-sm font-medium text-gray-700">Dietary Allergies:</label>
+                {['Nuts', 'Gluten', 'Milk', 'Sea Food', 'Soy'].map((allergy) => (
                   <div key={allergy} className="flex items-center">
                     <input type="checkbox" id={allergy} name="allergies" value={allergy} onChange={handleChange} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                     <label htmlFor={allergy} className="ml-2 block text-sm text-gray-900">{allergy.replace('_', ' ')}</label>
@@ -146,14 +145,14 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
               <div>
                 <label className="block text-sm font-medium text-gray-700">Preferred Protein Sources:</label>
                 <strong>Animal-Based Proteins:</strong>
-                {['chicken', 'eggs', 'red_meat', 'fish'].map((protein) => (
+                {['Chicken', 'Eggs', 'Red Meat', 'Fish'].map((protein) => (
                   <div key={protein} className="flex items-center">
                     <input type="checkbox" id={protein} name="proteinSources" value={protein} onChange={handleChange} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                     <label htmlFor={protein} className="ml-2 block text-sm text-gray-900">{protein.replace('_', ' ')}</label>
                   </div>
                 ))}
                 <strong>Plant-Based Proteins:</strong>
-                {['lentils', 'tofu', 'paneer'].map((protein) => (
+                {['Lentils', 'Tofu', 'Paneer'].map((protein) => (
                   <div key={protein} className="flex items-center">
                     <input type="checkbox" id={protein} name="proteinSources" value={protein} onChange={handleChange} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                     <label htmlFor={protein} className="ml-2 block text-sm text-gray-900">{protein}</label>
@@ -162,7 +161,7 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Taking Protein Powder:</label>
+                <label className="block text-sm font-medium text-gray-700">Include Protein Powder:</label>
                 <div className="flex items-center">
                   <input type="radio" id="supplements-yes" name="supplements" value="yes" onChange={handleChange} checked={formData.supplements === 'yes'} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
                   <label htmlFor="supplements-yes" className="ml-2 block text-sm text-gray-900">Yes</label>
@@ -172,9 +171,6 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
                   <label htmlFor="supplements-no" className="ml-2 block text-sm text-gray-900">No</label>
                 </div>
               </div>
-
-              <h3 className="text-xl font-semibold">Workout-Related</h3>
-
               <div>
                 <label htmlFor="workoutDays" className="block text-sm font-medium text-gray-700">Number of Workout Days:</label>
                 <input type="number" id="workoutDays" name="workoutDays" value={formData.workoutDays} onChange={handleChange} min="1" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" />
@@ -187,7 +183,7 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">Equipment Available:</label>
-                {['dumbbells', 'kettlebells', 'barbells', 'machines', 'yoga_mat', 'foam_roller', 'stretch_band'].map((equipment) => (
+                {['Dumbbells', 'Kettlebells', 'Barbells', 'Machines', 'Yoga Mat', 'Foam Roller', 'Stretch Band'].map((equipment) => (
                   <div key={equipment} className="flex items-center">
                     <input type="checkbox" id={equipment} name="equipment" value={equipment} onChange={handleChange} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                     <label htmlFor={equipment} className="ml-2 block text-sm text-gray-900">{equipment.replace('_', ' ')}</label>
@@ -196,12 +192,12 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
               </div>
 
               <div>
-                <label htmlFor="dailyTime" className="block text-sm font-medium text-gray-700">Time Available Per Day (hours):</label>
+                <label htmlFor="dailyTime" className="block text-sm font-medium text-gray-700">Available Workout Time (in hours):</label>
                 <input type="number" id="dailyTime" name="dailyTime" value={formData.dailyTime} step="0.5" onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Mobility/Flexibility:</label>
+                <label className="block text-sm font-medium text-gray-700">Include Mobility/Flexibility:</label>
                 <div className="flex items-center">
                   <input type="radio" id="mobility-yes" name="mobility" value="yes" onChange={handleChange} checked={formData.mobility === 'yes'} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
                   <label htmlFor="mobility-yes" className="ml-2 block text-sm text-gray-900">Yes</label>
@@ -211,9 +207,6 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
                   <label htmlFor="mobility-no" className="ml-2 block text-sm text-gray-900">No</label>
                 </div>
               </div>
-
-              <h3 className="text-xl font-semibold">Personal</h3>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700">Gender:</label>
                 <div className="flex items-center">
@@ -281,7 +274,7 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">Workout Goal:</label>
-                {['muscle_gain', 'weight_loss', 'maintenance'].map((goal) => (
+                {['Muscle Gain', 'Weight Loss', 'Maintenance'].map((goal) => (
                   <div key={goal} className="flex items-center">
                     <input type="checkbox" id={goal} name="workoutGoal" value={goal} onChange={handleChange} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                     <label htmlFor={goal} className="ml-2 block text-sm text-gray-900">{goal.replace('_', ' ')}</label>
@@ -296,7 +289,7 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">Diet Preference:</label>
-                {['veg', 'non-veg', 'vegan'].map((diet) => (
+                {['Vegetarian', 'Non-Vegetarian', 'Vegan'].map((diet) => (
                   <div key={diet} className="flex items-center">
                     <input type="radio" id={`diet-${diet}`} name="diet" value={diet} onChange={handleChange} checked={formData.diet === diet} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
                     <label htmlFor={`diet-${diet}`} className="ml-2 block text-sm text-gray-900">{diet}</label>
@@ -306,7 +299,7 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
 
               <div>
               <h3 className="block text-sm font-medium text-gray-700">Lifestyle:</h3>
-              {['sedentary', 'lightly_active', 'moderately_active', 'very_active', 'super_active'].map((lifestyle) => (
+              {['Sedentary', 'Lightly Active', 'Moderately Active', 'Very Active', 'Super Active'].map((lifestyle) => (
                 <div key={lifestyle} className="flex items-center">
                   <input type="radio" id={`lifestyle-${lifestyle}`} name="lifestyle" value={lifestyle} onChange={handleChange} checked={formData.lifestyle === lifestyle} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
                   <label htmlFor={`lifestyle-${lifestyle}`} className="ml-2 block text-sm text-gray-900">{lifestyle.replace('_', ' ')}</label>

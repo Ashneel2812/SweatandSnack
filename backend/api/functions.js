@@ -20,7 +20,9 @@ const client ={
 },
 };
 // CORS configuration
-const allowedOrigins = 'https://www.sweatandsnack.vercel.app'; // Frontend domain
+const allowedOrigins = 'https://www.sweatandsnack.vercel.app';
+// const allowedOrigins= 'http://localhost:3000';
+; // Frontend domain
 app.use(cors({
   origin: allowedOrigins, // Allow only your frontend domain
   methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
@@ -56,7 +58,6 @@ jobQueue.process('generatePlan', async (job) => {
       console.log(`No feedback found. Generating new plan for job: ${job.id}`);
       result = await generatePlans(formData);
     }
-    console.log(jobQueue);
     console.log(`Job ${job.id} completed successfully.`);
     return { status: 'success', plan: result };
   } catch (error) {

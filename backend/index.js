@@ -18,7 +18,7 @@ const redis = require('redis');
 const app = express();
 const PORT = 5000;
 const allowedOrigins = 'https://www.sweatandsnack.vercel.app'; // Frontend domain
-
+// const allowedOrigins= 'http://localhost:3000';
 app.use(cors({
   origin: allowedOrigins, // Allow only your frontend domain
   methods: ['GET', 'POST', 'OPTIONS'], // Allow specific methods
@@ -42,8 +42,7 @@ const uri = 'mongodb+srv://dbUser:dbUserPassword@sweatandsnack.5nd6x.mongodb.net
 
 // BullMQ Queue
 const jobQueue = new Queue('generatePlan', client);
-console.log("This is the job queue",jobQueue);
-console.log("This is the client",client)
+
 
 jobQueue.on('ready', () => {
   console.log('Queue is connected and ready to use');

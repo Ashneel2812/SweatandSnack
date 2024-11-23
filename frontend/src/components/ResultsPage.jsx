@@ -106,7 +106,6 @@ export default function ResultsPage() {
       } else {
         planData = getFromSession('aiGeneratedPlan');
       }
-
       if (planData) {
         try {
           let parsedPlan;
@@ -119,6 +118,7 @@ export default function ResultsPage() {
                 return { ...acc, ...JSON.parse(cleanJson) };
               }, {});
             } else {
+              console.log("plandata",planData)
               parsedPlan = JSON.parse(planData);
             }
           } else {
@@ -226,7 +226,7 @@ export default function ResultsPage() {
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 className="w-full p-2 border rounded"
-                placeholder="Please provide your feedback"
+                placeholder="Please specify any changes or medical conditions to consider for the plan"
                 rows={4}
               />
               <button 
