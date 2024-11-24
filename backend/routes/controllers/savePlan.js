@@ -35,7 +35,7 @@ const connectMongoDB = async () => {
     // Check if the database connection is already established
     if (mongoose.connection.readyState !== 1) {
       console.log('Connecting to MongoDB...');
-      await mongoose.connect('mongodb+srv://dbUser:dbUserPassword@sweatandsnack.5nd6x.mongodb.net/SweatandSnack?retryWrites=true&w=majority&appName=SweatandSnack', {
+      await mongoose.connect(process.env.MONGO_DB, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
