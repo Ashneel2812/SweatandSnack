@@ -97,7 +97,6 @@ export default function FinalResultsPage() {
           workoutPlan: finalPlan.workout_plan,
           dietMacros: finalPlan.diet_macros // Ensure dietMacros is included
         },{withCredentials: true});
-        console.log('Plan saved:', response.data);
         alert('Your plan has been saved and will be emailed to you shortly!');
       } else if (emailAction === 'generate-google-sheet') {
         // const response = await axios.post('http://localhost:5000/api/generate-google-sheet', {
@@ -106,7 +105,6 @@ export default function FinalResultsPage() {
           workoutPlan: finalPlan.workout_plan,
            // Send the email input
         },{withCredentials: true});
-        console.log('Google Sheet generated:', response.data);
         alert('Google Sheet generated successfully and sent to your email!');
       }
     } catch (error) {

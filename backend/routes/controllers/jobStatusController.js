@@ -2,9 +2,9 @@ const Queue = require('bull');
 const redis = require('redis');
 const client ={
   redis:{
-  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-  port: 10776,
-  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja'
+  host: process.env.REDIS_HOST||'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: process.env.REDIS_PORT||10776,
+  password: process.env.REDIS_PWD||'8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja'
 },
 };
 const jobQueue = new Queue('generatePlan', client);

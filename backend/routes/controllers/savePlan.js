@@ -185,8 +185,8 @@ sendEmailQueue.process('send-email-save-plan', async (job) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER || 'iashneel@gmail.com',  // Your email
-        pass: process.env.EMAIL_PASSWORD || 'xdga zgbn pcst aqnx',  // App-specific password or regular password
+        user: process.env.EMAIL_USER || 'sweatandsnack2024@gmail.com',  // Your email
+        pass: process.env.EMAIL_PASSWORD || 'dipg naah huny fjrv',  // App-specific password or regular password
       },
     });
 

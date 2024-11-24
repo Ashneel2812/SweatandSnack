@@ -6,9 +6,9 @@ const Redis = require('ioredis'); // Import ioredis to manage the Redis connecti
 
 // Define Redis configuration
 const REDIS_CONFIG = {
-  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-  port: 10776,
-  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
+  host: process.env.REDIS_HOST||'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: process.env.REDIS_PORT||10776,
+  password: process.env.REDIS_PWD||'8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja',
   settings: {
     connectTimeout: 4000, // Set timeout to 10 seconds (default is 1000ms)
   }
@@ -142,8 +142,8 @@ sendEmailQueue.process('send-email', async (job) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'iashneel@gmail.com', // Your email
-        pass: 'djgn lkrx ugtp bjgm', // Your email password or app password
+        user: process.env.EMAIL_USER || 'sweatandsnack2024@gmail.com',  // Your email
+        pass: process.env.EMAIL_PASSWORD || 'dipg naah huny fjrv',  // App-specific password or regular password
       },
     });
 

@@ -6,6 +6,7 @@ import loadingVideo from './recording.mp4'; // Adjust the path if needed
 const LoadingPage = () => {
   const [loadingMessage, setLoadingMessage] = useState("Checking job status...");
   const [error, setError] = useState(false);
+  const [counter, setCounter] = useState(0); // Track how many times we poll the job status
   const navigate = useNavigate();
   const location = useLocation();  // Get location state (which contains the responseData)
 
@@ -24,14 +25,27 @@ const LoadingPage = () => {
     const checkJobStatus = async () => {
       try {
         // const response = await axios.get(`http://localhost:5000/api/job-status/${jobId}`);
-        const response = await axios.get(`https://sweatand-snack.vercel.app/api/job-status/${jobId}`,{withCredentials: true});
-        if (response.data.status === "completed") {
+        const response = await axios.get(`https://sweatand-snack.vercel.app/api/job-status/${jobId}`, { withCredentials: true });
+
+        // Check the job status
+        if (response.data.status === "completed" && counter === 12) {
           setLoadingMessage("Job completed!");
           navigate("/results", { state: { aiGeneratedPlan: response.data.result.plan } });
-        } else if (response.data.status === "failed") {
+        } else if (response.data.status === "failed" && counter === 12) {
           setError(true);
           setLoadingMessage("Job failed.");
         }
+
+        // If job is still "active" and counter is less than 12, increment the counter
+        else if (response.data.status === "active" && counter < 12) {
+          setCounter(prevCounter => prevCounter + 1);
+        } 
+        // If the counter reaches 12 and job is still active, stop the polling
+        else if (counter === 12) {
+          setError(true);
+          setLoadingMessage("Job is still active after 12 checks. Please try again later.");
+        }
+
       } catch (error) {
         console.error("Error fetching job status:", error);
         setError(true);
@@ -41,12 +55,16 @@ const LoadingPage = () => {
 
     // First API call after 5 seconds
     const firstCallTimeout = setTimeout(() => {
-      checkJobStatus();  // First API call after 5 seconds
+      checkJobStatus();  // First API call after 3 seconds
     }, 3000);
 
     // Start polling every 10 seconds after the first call
     const intervalId = setInterval(() => {
-      checkJobStatus(); // Poll every 10 seconds
+      if (counter < 12) {
+        checkJobStatus(); // Poll every 10 seconds
+      } else {
+        clearInterval(intervalId);  // Stop polling once counter reaches 12
+      }
     }, 10000);
 
     // Cleanup the timeout and interval when the component is unmounted
@@ -54,7 +72,7 @@ const LoadingPage = () => {
       clearTimeout(firstCallTimeout);
       clearInterval(intervalId);
     };
-  }, [location.state, navigate]); // Only run when responseData is passed as state
+  }, [location.state, navigate , counter]); // Only run when responseData is passed as state
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">

@@ -7,9 +7,9 @@ const { createClient } = require('redis');
 
 const client ={
   redis:{
-  host: 'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
-  port: 10776,
-  password: '8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja'
+  host: process.env.REDIS_HOST||'redis-10776.c301.ap-south-1-1.ec2.redns.redis-cloud.com',
+  port: process.env.REDIS_PORT||10776,
+  password: process.env.REDIS_PWD||'8Mkxhn4ZLd6x3I5vJzwAmeQJB8lsqNja'
 },
 };
 
@@ -19,7 +19,7 @@ const jobQueue = new Queue('generatePlan', client);
 
 // Initialize OpenAI client with your API key
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: process.env.OPENAI||'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',
 });
 
 console.log('Initializing workers...');

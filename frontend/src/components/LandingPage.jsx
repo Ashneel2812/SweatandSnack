@@ -23,22 +23,11 @@ export default function LandingPage() {
     e.preventDefault();
     emailjs.send('service_rj8kpyo', 'template_tpto39p', formData, 'nCux8mV2_UFJV6LUq')
       .then((response) => {
-        alert('Query sent!'); // Show alert after successful email sending
-        // Optionally reset the form
+        alert('Query sent!');
         setFormData({ name: '', email: '', message: '' });
       }, (err) => {
         console.error('FAILED...', err);
       });
-  };
-
-  const aboutData = {
-    paragraph: 'At SweatandSnack, we are dedicated to helping you achieve your fitness goals through personalized diet and workout plans. Our mission is to provide you with the tools and resources you need to lead a healthier lifestyle, whether you are looking to lose weight, build muscle, or maintain your current fitness level.',
-    benefits: [
-      'Personalized Plans: Tailored diet and workout plans based on your individual needs and goals.',
-      'User-Friendly Interface: Easily navigate through our platform to find the right plan for you.',
-      'Progress Tracking: Monitor your progress with our built-in tracking tools to stay motivated.',
-      'Flexible Options: Choose from a variety of meal plans and workout routines that fit your lifestyle.'
-    ]
   };
 
   // Handle scroll events to show/hide the arrow
@@ -57,6 +46,35 @@ export default function LandingPage() {
     };
   }, []);
 
+  // Smooth scroll to section when hash changes
+  useEffect(() => {
+    const scrollToHash = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    };
+
+    scrollToHash(); // Scroll on initial load
+    window.addEventListener('hashchange', scrollToHash);
+
+    return () => {
+      window.removeEventListener('hashchange', scrollToHash);
+    };
+  }, []);
+
+  const aboutData = {
+    paragraph: 'At SweatandSnack, we are dedicated to helping you achieve your fitness goals through personalized diet and workout plans. Our mission is to provide you with the tools and resources you need to lead a healthier lifestyle, whether you are looking to lose weight, build muscle, or maintain your current fitness level.',
+    benefits: [
+      'Personalized Plans: Tailored diet and workout plans based on your individual needs and goals.',
+      'User-Friendly Interface: Easily navigate through our platform to find the right plan for you.',
+      'Progress Tracking: Monitor your progress with our built-in tracking tools to stay motivated.',
+      'Flexible Options: Choose from a variety of meal plans and workout routines that fit your lifestyle.'
+    ]
+  };
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -65,10 +83,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-center justify-center h-full bg-black bg-opacity-50">
             <h1 className="text-4xl font-bold text-white mb-4">Diet and Workout Planner</h1>
             <p className="text-xl text-white mb-8">Get your personalized diet and workout plan today!</p>
-            <Link
-              to="/questionnaire"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded mb-4 text-lg"
-            >
+            <Link to="/questionnaire" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded mb-4 text-lg">
               Generate Diet and Workout Plan
             </Link>
           </div>
@@ -123,27 +138,12 @@ export default function LandingPage() {
       {/* Arrow Button */}
       {showArrow && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
-        <a
-          href="#about"
-          className="bg-blue-500 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-transform transform hover:scale-110 flex items-center justify-center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </a>
-      </div>
-      
+          <a href="#about" className="bg-blue-500 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-transform transform hover:scale-110 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+        </div>
       )}
     </div>
   );
