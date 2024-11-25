@@ -17,7 +17,7 @@ const redis = require('redis');
 
 const app = express();
 const PORT = 5000;
-const allowedOrigins = 'https://www.sweatandsnack.vercel.app'; // Frontend domain
+const allowedOrigins = 'https://www.sweatandsnack.com'; // Frontend domain
 // const allowedOrigins= 'http://localhost:3000';
 app.use(cors({
   origin: allowedOrigins, // Allow only your frontend domain

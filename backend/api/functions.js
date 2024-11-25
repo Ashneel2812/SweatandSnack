@@ -20,7 +20,7 @@ const client ={
 },
 };
 // CORS configuration
-const allowedOrigins = 'https://www.sweatandsnack.vercel.app';
+const allowedOrigins = 'https://www.sweatandsnack.com';
 // const allowedOrigins= 'http://localhost:3000';
 ; // Frontend domain
 app.use(cors({
