@@ -28,24 +28,13 @@ const LoadingPage = () => {
         const response = await axios.get(`https://sweatand-snack.vercel.app/api/job-status/${jobId}`, { withCredentials: true });
 
         // Check the job status
-        if (response.data.status === "completed" && counter === 12) {
+        if (response.data.status === "completed") {
           setLoadingMessage("Job completed!");
           navigate("/results", { state: { aiGeneratedPlan: response.data.result.plan } });
         } else if (response.data.status === "failed" && counter === 12) {
           setError(true);
           setLoadingMessage("Job failed.");
         }
-
-        // If job is still "active" and counter is less than 12, increment the counter
-        else if (response.data.status === "active" && counter < 12) {
-          setCounter(prevCounter => prevCounter + 1);
-        } 
-        // If the counter reaches 12 and job is still active, stop the polling
-        else if (counter === 12) {
-          setError(true);
-          setLoadingMessage("Job is still active after 12 checks. Please try again later.");
-        }
-
       } catch (error) {
         console.error("Error fetching job status:", error);
         setError(true);
