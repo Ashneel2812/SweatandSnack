@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const { createClient } = require('redis');
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI||'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'
+  apiKey: process.env.OPENAI||'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'
 });
 
 const client ={
