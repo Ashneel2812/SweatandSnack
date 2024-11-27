@@ -169,12 +169,12 @@ ${JSON.stringify(formData)}
         "plan_adjustments": ["Changed lunch meal to include more vegetables", "Increased protein intake in the workout recovery shake"]}
 
         **Do not make any change in the JSON provided and as you are a professional trainer give the complete data instead of saying similar structure and please think and give the best data possible **
-        ** You are supposed to give the exact JSON as a response**
+        ** Please provide the response in a structured JSON format for both the diet, workout plan, diet_macros and plan_adjustments with the format outlined above**
 `;
 
 
   const response = await openai.chat.completions.create({
-    model: 'gpt-4.0-mini',
+    model: 'gpt-3.5-turbo',
     messages: [{ role: 'user', content: prompt }],
   });
 
