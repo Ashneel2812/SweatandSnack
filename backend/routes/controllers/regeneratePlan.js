@@ -166,10 +166,11 @@ ${JSON.stringify(formData)}
             "fats": "wg"
           }
         },
-        "plan_adjustments": ["Changed lunch meal to include more vegetables", "Increased protein intake in the workout recovery shake"]
+        "plan_adjustments": ["Changed lunch meal to include more vegetables", "Increased protein intake in the workout recovery shake"]}
 
         **Do not make any change in the JSON provided and as you are a professional trainer give the complete data instead of saying similar structure and please think and give the best data possible **
-}`;
+        ** You are supposed to give the exact JSON as a response**
+`;
 
 
   const response = await openai.chat.completions.create({
