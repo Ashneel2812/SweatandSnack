@@ -174,7 +174,7 @@ ${JSON.stringify(formData)}
 
 
   const response = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4.0-mini',
     messages: [{ role: 'user', content: prompt }],
   });
 
