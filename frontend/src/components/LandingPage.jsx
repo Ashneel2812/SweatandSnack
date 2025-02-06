@@ -67,7 +67,7 @@ export default function LandingPage() {
   }, []);
 
   const aboutData = {
-    paragraph: 'At SweatandSnack, we are dedicated to helping you achieve your fitness goals through personalized diet and workout plans. Our mission is to provide you with the tools and resources you need to lead a healthier lifestyle, whether you are looking to lose weight, build muscle, or maintain your current fitness level.',
+    paragraph: 'Get personalized meal and workout plans to reach your fitness goals with expert guidance and tailored routines!',
     benefits: [
       'Personalized Plans: Tailored diet and workout plans based on your individual needs and goals.',
       'User-Friendly Interface: Easily navigate through our platform to find the right plan for you.',
