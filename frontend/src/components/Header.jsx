@@ -26,12 +26,12 @@ export default function Header() {
       <nav>
         <ul className="flex space-x-4">
           <li>
-            <a href="#about" onClick={(e) => handleLinkClick(e, 'about')} className="text-gray-600 hover:text-gray-900">
+            <a href="https://www.sweatandsnack.com/#about" onClick={(e) => handleLinkClick(e, 'about')} className="text-gray-600 hover:text-gray-900">
               About
             </a>
           </li>
           <li>
-            <a href="#contact" onClick={(e) => handleLinkClick(e, 'contact')} className="text-gray-600 hover:text-gray-900">
+            <a href="https://www.sweatandsnack.com/#contact" onClick={(e) => handleLinkClick(e, 'contact')} className="text-gray-600 hover:text-gray-900">
               Contact
             </a>
           </li>
