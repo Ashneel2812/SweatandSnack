@@ -4,6 +4,7 @@ import Header from './Header';
 import bgImg from '../../src/assets/hor_img1.jpeg'; // Adjust the path if needed
 import abtbgImg from '../../src/assets/hor_img2.jpeg'; // Adjust the path if needed
 import emailjs from 'emailjs-com'; // Import EmailJS
+import { Helmet } from 'react-helmet';
 
 export default function LandingPage() {
   const [formData, setFormData] = useState({
@@ -77,6 +78,11 @@ export default function LandingPage() {
   };
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <meta name="description" content="Get personalized meal and workout plans to reach your fitness goals with expert guidance and tailored routines!" />
+        <title>SweatandSnack - Personalized Meal and Workout Plans</title>
+        <meta property="og:image" content="../assets/only_logo.png" />
+      </Helmet>
       <Header />
       <main className="flex-grow flex flex-col items-center justify-center bg-gray-100 h-screen relative">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${bgImg})` }}>
