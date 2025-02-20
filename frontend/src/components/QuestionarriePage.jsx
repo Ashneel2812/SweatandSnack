@@ -4,6 +4,7 @@ import Header from './Header';
 import axios from 'axios';
 import { saveToSession, getFromSession } from '../utils/sessionStorage';
 import bgImg from '../../src/assets/hor_img1.jpeg'; // Adjust the path if needed
+import { Helmet } from 'react-helmet';
 
 export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
   const [formData, setFormData] = useState(() => getFromSession('formData') || {
@@ -108,6 +109,12 @@ export default function QuestionnairePage({ onLoadingStart, onLoadingEnd }) {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+              <title>SweatandSnack</title>
+              <meta name="description" content="Answer personalised questions inorder to get a workout and diet plan specially for you!" />
+              <meta property="og:image" content="../assets/only_logo.png" />
+              <link rel="canonical" href="https://www.sweatandsnack.com/questionnaire" />
+      </Helmet>
       <Header />
       <main className="flex-grow relative">
         {/* Set the background image */}

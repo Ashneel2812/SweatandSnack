@@ -21,7 +21,15 @@ export default function Header() {
   return (
     <header style={{ backgroundColor: '#EFEFEF' }} className="top-0 left-0 right-0 shadow-md p-4 flex justify-between items-center z-50">
       <Link to="/" className="flex items-center">
-        <img src={logo} alt="Diet and Workout Planner Logo" className="h-auto max-h-12" />
+      <img 
+        src={logo} 
+        alt="Diet and Workout Planner Logo" 
+        className="h-auto max-h-12" 
+        title="Diet and Workout Planner Logo"
+        loading="lazy" 
+        width="120" 
+        height="48" 
+      />
       </Link>
       <nav>
         <ul className="flex space-x-4">

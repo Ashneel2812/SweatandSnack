@@ -79,9 +79,10 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
+        <title>SweatandSnack</title>
         <meta name="description" content="Get personalized meal and workout plans to reach your fitness goals with expert guidance and tailored routines!" />
-        <title>SweatandSnack - Personalized Meal and Workout Plans</title>
         <meta property="og:image" content="../assets/only_logo.png" />
+        <link rel="canonical" href="https://www.sweatandsnack.com/" />
       </Helmet>
       <Header />
       <main className="flex-grow flex flex-col items-center justify-center bg-gray-100 h-screen relative">
@@ -101,7 +102,15 @@ export default function LandingPage() {
         <div className="container mx-auto flex flex-col md:flex-row items-center md:items-start">
           {/* Centered Image */}
           <div className="flex-shrink-0 mb-4 md:mb-0 md:w-1/2 flex justify-center">
-          <img src={abtbgImg} className="w-full h-[450px] rounded-lg shadow-lg" alt="About Us" />
+          <img 
+            src={abtbgImg} 
+            className="w-full h-[450px] rounded-lg shadow-lg" 
+            alt="About Us" 
+            title="About Us" 
+            loading="lazy"
+            width="1200" 
+            height="450" 
+          />
           </div>
           {/* Text on the right */}
           <div className="md:w-1/2 pl-4">
