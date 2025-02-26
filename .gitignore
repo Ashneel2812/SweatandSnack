@@ -1,1 +1,3 @@
 backend/.env.local
+backend/routes/credentials.json
+backend/routes/credentials_oauth.json
